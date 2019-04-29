@@ -133,7 +133,7 @@ case $1 in
 				echo "	subject		the certificate subject string."
 				echo "			Ex: $(basename $0) config subject $DEFAULT_SUBJECT"
 				echo "	hostctrl	The ctrl command to control host."
-				echo "			Ex: $(basename $0) config hostctrl $DEFAULT_HOSTCTRL"
+				echo "			Ex: $(basename $0) config hostctrl \"$DEFAULT_HOSTCTRL\""
 				echo "	storageclass	The storageclass command to create pv."
 				echo "			Ex: $(basename $0) config storageclass $DEFAULT_STORAGECLASS"
 				echo "	gpg		configure which gpg key to use."

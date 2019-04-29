@@ -1,1 +1,1 @@
-# kube-apps
+# kube-apps-platform

@@ -27,13 +27,20 @@ spec:
           name: hackmd
           imagePullPolicy: IfNotPresent
           env:
-            - name: HMD_DB_PASSWORD
+            - name: CMD_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: passwords
                   key: user-password
+            - name: CMD_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: rest-password
+            - name: CMD_DB_URL
+              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
             - name: HMD_DB_URL
-              value: postgres://hackmd:\$(HMD_DB_PASSWORD)@postgres:5432/hackmd
+              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
           ports:
             - name: web
               containerPort: 3000

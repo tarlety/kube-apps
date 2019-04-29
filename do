@@ -59,6 +59,8 @@ HOSTCTRL=`cat $CONFIG/hostctrl 2>/dev/null`
 STORAGECLASS=`cat $CONFIG/storageclass 2>/dev/null`
 GPGKEYNAME=`cat $CONFIG/gpgkeyname 2>/dev/null`
 
+export DOMAIN
+
 #------------------------------------------------------------------------------
 # Commands
 
@@ -261,12 +263,12 @@ case $1 in
 				admin/00-namespace.sh $APPNAME off
 				;;
 			"on")
-				DOMAIN=${DOMAIN} app/$APPNAME/10-configmap.sh on
+				app/$APPNAME/10-configmap.sh on
 				app/$APPNAME/20-deploy.sh on
 				app/$APPNAME/40-svc.sh on
 				;;
 			"off")
-				DOMAIN=${DOMAIN} app/$APPNAME/10-configmap.sh off
+				app/$APPNAME/10-configmap.sh off
 				app/$APPNAME/20-deploy.sh off
 				app/$APPNAME/40-svc.sh off
 				;;

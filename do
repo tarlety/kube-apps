@@ -50,7 +50,7 @@ REQ=${SECRET}/cert.req
 SALT=${SECRET}/salt
 
 STORE=`cat $CONFIG/store 2>/dev/null`
-EXTFILE=`cat $CONFIG/v3.ext 2>/dev/null`
+EXTFILE=$CONFIG/v3.ext
 SUBJECT=`cat $CONFIG/subject 2>/dev/null`
 DOMAIN=`cat $CONFIG/domain 2>/dev/null`
 GPGKEYNAME=`cat $CONFIG/gpgkeyname 2>/dev/null`
@@ -70,7 +70,7 @@ case $1 in
 		echo - KEY: $(ls $KEY 2>/dev/null) $(cat $KEY $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - CRT: $(ls $CRT 2>/dev/null) $(cat $CRT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - REQ: $(ls $REQ 2>/dev/null) $(cat $REQ $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - EXTFILE: $(ls $EXTFILE 2>/dev/null) $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
+		echo - EXTFILE: $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - GPGKEYNAME: $GPGKEYNAME $(gpg -k $GPGKEYNAME 2>/dev/null | sed -n '2p' | xargs)
 		echo - SALT: $(ls $SALT 2>/dev/null) $(cat $SALT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo \#\# REQUIREMENT:

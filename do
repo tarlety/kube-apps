@@ -42,6 +42,8 @@ CONFIG=${CONFIG:-".config/$SCRIPTNAME"}
 DEFAULT_STORE=${STORE:-".store/$SCRIPTNAME"}
 DEFAULT_DOMAIN=minikube
 DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
+DEFAULT_HOSTCTRL="ssh -i `minikube ssh-key` docker@`minikube ip`"
+DEFAULT_STORAGECLASS=$PWD/store/hostpath.sh
 DEFAULT_GPGKEYNAME=$USERNAME
 
 KEY=${SECRET}/cert.key
@@ -53,6 +55,8 @@ STORE=`cat $CONFIG/store 2>/dev/null`
 EXTFILE=$CONFIG/v3.ext
 SUBJECT=`cat $CONFIG/subject 2>/dev/null`
 DOMAIN=`cat $CONFIG/domain 2>/dev/null`
+HOSTCTRL=`cat $CONFIG/hostctrl 2>/dev/null`
+STORAGECLASS=`cat $CONFIG/storageclass 2>/dev/null`
 GPGKEYNAME=`cat $CONFIG/gpgkeyname 2>/dev/null`
 
 #------------------------------------------------------------------------------
@@ -71,9 +75,12 @@ case $1 in
 		echo - CRT: $(ls $CRT 2>/dev/null) $(cat $CRT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - REQ: $(ls $REQ 2>/dev/null) $(cat $REQ $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - EXTFILE: $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
+		echo - HOSTCTRL: $HOSTCTRL
+		echo - STORAGECLASS: $STORAGECLASS
 		echo - GPGKEYNAME: $GPGKEYNAME $(gpg -k $GPGKEYNAME 2>/dev/null | sed -n '2p' | xargs)
 		echo - SALT: $(ls $SALT 2>/dev/null) $(cat $SALT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo \#\# REQUIREMENT:
+		echo - minikube: $(which minikube)
 		echo - openssl: $(which openssl)
 		echo - gpg: $(which gpg)
 		echo - tar: $(which tar)
@@ -100,6 +107,16 @@ case $1 in
 				SUBJECT=${1:-$DEFAULT_SUBJECT}
 				echo $SUBJECT > ${CONFIG}/subject
 				;;
+			"hostctrl")
+				shift
+				HOSTCTRL=${1:-$DEFAULT_HOSTCTRL}
+				echo $HOSTCTRL > ${CONFIG}/hostctrl
+				;;
+			"storageclass")
+				shift
+				STORAGECLASS=${1:-$DEFAULT_STORAGECLASS}
+				echo $STORAGECLASS > ${CONFIG}/storageclass
+				;;
 			"gpg")
 				shift
 				GPGKEYNAME=${1:-$DEFAULT_GPGKEYNAME}
@@ -115,6 +132,10 @@ case $1 in
 				echo "			Ex: $(basename $0) config domain $DEFAULT_DOMAIN"
 				echo "	subject		the certificate subject string."
 				echo "			Ex: $(basename $0) config subject $DEFAULT_SUBJECT"
+				echo "	hostctrl	The ctrl command to control host."
+				echo "			Ex: $(basename $0) config hostctrl $DEFAULT_HOSTCTRL"
+				echo "	storageclass	The storageclass command to create pv."
+				echo "			Ex: $(basename $0) config storageclass $DEFAULT_STORAGECLASS"
 				echo "	gpg		configure which gpg key to use."
 				echo "			Ex: $(basename $0) config gpg $DEFAULT_GPGKEYNAME"
 				;;
@@ -209,6 +230,23 @@ case $1 in
 				;;
 		esac
 		;;
+	"ssh")
+		shift
+		eval $HOSTCTRL -- \"$*\"
+		;;
+	"store")
+		shift
+		ACTION=$1
+		shift
+		case $ACTION in
+			"create")
+				eval $STORAGECLASS $1 $2 $3 $4
+				;;
+			"delete")
+				kubectl delete pv $1-$2
+				;;
+		esac
+		;;
 	"app")
 		shift
 		APPNAME=$1
@@ -257,6 +295,9 @@ case $1 in
 		echo $(basename $0) "state [list/save/load] [config/secret/data] [state_name]"
 		echo $(basename $0) certs on/off
 		echo $(basename $0) ing on/off
+		echo $(basename $0) ssh ...
+		echo $(basename $0) "store create <namespace> <volname> <capacity> <volpath>"
+		echo $(basename $0) "store delete <namespace> <volname>"
 		echo $(basename $0) app appname init/clean/on/off/print
 		;;
 esac

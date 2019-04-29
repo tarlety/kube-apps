@@ -113,8 +113,6 @@ case $1 in
 				echo "			Ex: $(basename $0) config store $DEFAULT_STORE"
 				echo "	domain		the base domain name of the service."
 				echo "			Ex: $(basename $0) config domain $DEFAULT_DOMAIN"
-				echo "	domain		the base domain name of the service."
-				echo "			Ex: $(basename $0) config domain $DEFAULT_DOMAIN"
 				echo "	subject		the certificate subject string."
 				echo "			Ex: $(basename $0) config subject $DEFAULT_SUBJECT"
 				echo "	gpg		configure which gpg key to use."

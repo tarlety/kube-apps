@@ -40,9 +40,12 @@ SECRET=${SECRET:-".secret/$SCRIPTNAME"}
 CONFIG=${CONFIG:-".config/$SCRIPTNAME"}
 
 DEFAULT_STORE=${STORE:-".store/$SCRIPTNAME"}
+DEFAULT_BASE_CONFIG=nop
+DEFAULT_BASE_SECRET=nop
+DEFAULT_BASE_DATA=nop
 DEFAULT_DOMAIN=minikube
 DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
-DEFAULT_HOSTCTRL="ssh -i `minikube ssh-key` docker@`minikube ip`"
+DEFAULT_HOSTCTRL="ssh -i \`minikube ssh-key\` docker@\`minikube ip\`"
 DEFAULT_STORAGECLASS=$PWD/store/hostpath.sh
 DEFAULT_GPGKEYNAME=$USERNAME
 
@@ -52,6 +55,9 @@ REQ=${SECRET}/cert.req
 SALT=${SECRET}/salt
 
 STORE=`cat $CONFIG/store 2>/dev/null`
+BASE_CONFIG=`cat $CONFIG/base_config 2>/dev/null`
+BASE_SECRET=`cat $CONFIG/base_secret 2>/dev/null`
+BASE_DATA=`cat $CONFIG/base_data 2>/dev/null`
 EXTFILE=$CONFIG/v3.ext
 SUBJECT=`cat $CONFIG/subject 2>/dev/null`
 DOMAIN=`cat $CONFIG/domain 2>/dev/null`
@@ -68,9 +74,9 @@ case $1 in
 	"env")
 		echo =========================================================================
 		echo \#\# SCRIPT NAME: $SCRIPTNAME
+		echo - STORE: $STORE
 		echo - SECRET: $SECRET
 		echo - CONFIG: $CONFIG
-		echo - STORE: $STORE
 		echo - DOMAIN: $DOMAIN
 		echo - SUBJECT: $SUBJECT
 		echo - KEY: $(ls $KEY 2>/dev/null) $(cat $KEY $SALT 2>/dev/null | sha1sum | cut -c1-8)
@@ -162,45 +168,51 @@ case $1 in
 		case $ACTION in
 			"save")
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
-					tar -zcf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz .config
+					tar -zcf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz ${CONFIG}
+					echo $STATENAME > ${CONFIG}/base_config
 				fi
 				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
 					tar -zc .secret | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc
+					echo $STATENAME > ${CONFIG}/base_secret
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
 					echo \#\# DATA:
 					echo "DATA state not support."
+					echo $STATENAME > ${CONFIG}/base_data
 				fi
 				;;
 			"load")
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
 					[ -e ${STORE}/state/$STATENAME-${APPNAME}-config.tgz ] && tar -zxf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz
+					echo $STATENAME > ${CONFIG}/base_config
 				fi
 				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
 					[ -e ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc ] && gpg -d ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc | tar xz
+					echo $STATENAME > ${CONFIG}/base_secret
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
 					echo \#\# DATA:
 					echo "DATA state not support."
+					echo $STATENAME > ${CONFIG}/base_data
 				fi
 				;;
 			"list"|*)
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
-					echo \#\# CONFIG:
+					echo \#\# CONFIG: $BASE_CONFIG
 					cd ${STORE}/state
 					ls *-$APPNAME-config.tgz 2>/dev/null | sed "s/-${APPNAME}-config.tgz//"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
-					echo \#\# SECRET:
+					echo \#\# SECRET: $BASE_SECRET
 					cd ${STORE}/state
 					ls *-$APPNAME-secret.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-secret.tgz.enc//"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
-					echo \#\# DATA:
+					echo \#\# DATA: $BASE_DATA
 					cd ${STORE}/data
-					ls *-${APPNAME}-data.tgz 2>/dev/null | sed "s/-${APPNAME}-data.tgz//"
+					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-data.tgz.enc//"
 					cd - &>/dev/null
 				fi
 				;;

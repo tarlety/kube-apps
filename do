@@ -254,7 +254,7 @@ case $1 in
 		shift
 		case $ACTION in
 			"create")
-				eval $STORAGECLASS $1 $2 $3 $4
+				eval $STORAGECLASS $1 $2 $3 $4 $5
 				;;
 			"delete")
 				kubectl delete pv $1-$2

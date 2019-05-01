@@ -89,10 +89,11 @@ case $1 in
 		echo - SALT: $(ls $SALT 2>/dev/null) $(cat $SALT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo "## REQUIREMENT:"
 		echo - minikube: $(which minikube)
+		echo - kubectl: $(which kubectl)
 		echo - openssl: $(which openssl)
 		echo - gpg: $(which gpg)
 		echo - tar: $(which tar)
-		echo - kubectl: $(which kubectl)
+		echo - colordiff: $(which colordiff)
 		echo =========================================================================
 		;;
 	"config")
@@ -217,7 +218,6 @@ case $1 in
 					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-data.tgz.enc//"
 					cd - &>/dev/null
 				fi
-
 				echo -e "${RED}## ENV: STATE | CURRENT:${NC}"
 				$0 env | colordiff -y --suppress-common-lines ${CONFIG}/env -
 				;;

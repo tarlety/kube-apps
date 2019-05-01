@@ -153,6 +153,7 @@ case $1 in
 	"secret-create")
 		shift
 		mkdir -p ${SECRET}
+		chmod -R go-rwx ${SECRET}
 
 		openssl genrsa -out $KEY
 		openssl req -sha512 -new -key $KEY -out $REQ -subj $SUBJECT

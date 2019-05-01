@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.2.0
+# Zerus Scripting Standard v0.3.0
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -73,7 +73,7 @@ export DOMAIN
 case $1 in
 	"env")
 		echo =========================================================================
-		echo \#\# SCRIPT NAME: $SCRIPTNAME
+		echo "## SCRIPT NAME: $SCRIPTNAME"
 		echo - STORE: $STORE
 		echo - SECRET: $SECRET
 		echo - CONFIG: $CONFIG
@@ -82,12 +82,12 @@ case $1 in
 		echo - KEY: $(ls $KEY 2>/dev/null) $(cat $KEY $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - CRT: $(ls $CRT 2>/dev/null) $(cat $CRT $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - REQ: $(ls $REQ 2>/dev/null) $(cat $REQ $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - EXTFILE: $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
+		echo - EXTFILE: $(ls $EXTFILE 2>/dev/null) $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
 		echo - HOSTCTRL: $HOSTCTRL
 		echo - STORAGECLASS: $STORAGECLASS
 		echo - GPGKEYNAME: $GPGKEYNAME $(gpg -k $GPGKEYNAME 2>/dev/null | sed -n '2p' | xargs)
 		echo - SALT: $(ls $SALT 2>/dev/null) $(cat $SALT $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo \#\# REQUIREMENT:
+		echo "## REQUIREMENT:"
 		echo - minikube: $(which minikube)
 		echo - openssl: $(which openssl)
 		echo - gpg: $(which gpg)
@@ -157,6 +157,7 @@ case $1 in
 		openssl req -sha512 -new -key $KEY -out $REQ -subj $SUBJECT
 		openssl x509 -sha512 -req -days 365 -in $REQ -signkey $KEY -out $CRT -extfile $EXTFILE
 		gpg --gen-random --armor 2 16 | base64 | cut -c1-16 > $SALT
+		$0 env > ${CONFIG}/env
 		;;
 	"state")
 		shift
@@ -168,6 +169,7 @@ case $1 in
 		case $ACTION in
 			"save")
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
+					$0 env > ${CONFIG}/env
 					tar -zcf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz ${CONFIG}
 					echo $STATENAME > ${CONFIG}/base_config
 				fi
@@ -176,7 +178,6 @@ case $1 in
 					echo $STATENAME > ${CONFIG}/base_secret
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
-					echo \#\# DATA:
 					echo "DATA state not support."
 					echo $STATENAME > ${CONFIG}/base_data
 				fi
@@ -191,30 +192,34 @@ case $1 in
 					echo $STATENAME > ${CONFIG}/base_secret
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
-					echo \#\# DATA:
 					echo "DATA state not support."
 					echo $STATENAME > ${CONFIG}/base_data
 				fi
 				;;
 			"list"|*)
+				RED='\033[0;31m'
+				NC='\033[0m'
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
-					echo \#\# CONFIG: $BASE_CONFIG
+					echo -e "${RED}## CONFIG: ${BASE_CONFIG}${NC}"
 					cd ${STORE}/state
 					ls *-$APPNAME-config.tgz 2>/dev/null | sed "s/-${APPNAME}-config.tgz//"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
-					echo \#\# SECRET: $BASE_SECRET
+					echo -e "${RED}## SECRET: ${BASE_SECRET}${NC}"
 					cd ${STORE}/state
 					ls *-$APPNAME-secret.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-secret.tgz.enc//"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
-					echo \#\# DATA: $BASE_DATA
+					echo -e "${RED}## DATA: ${BASE_DATA}${NC}"
 					cd ${STORE}/data
 					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-data.tgz.enc//"
 					cd - &>/dev/null
 				fi
+
+				echo -e "${RED}## ENV: STATE | CURRENT:${NC}"
+				$0 env | colordiff -y --suppress-common-lines ${CONFIG}/env -
 				;;
 		esac
 		;;
@@ -306,7 +311,7 @@ case $1 in
 		echo $(basename $0) env
 		echo $(basename $0) config ...
 		echo $(basename $0) secret-create
-		echo $(basename $0) "state [list/save/load] [config/secret/data] [state_name]"
+		echo $(basename $0) "state [list/save/load] [config/secret/data] [state_name, ex: date-stage-env]"
 		echo $(basename $0) certs on/off
 		echo $(basename $0) ing on/off
 		echo $(basename $0) ssh ...

@@ -45,7 +45,7 @@ DEFAULT_BASE_SECRET=nop
 DEFAULT_BASE_DATA=nop
 DEFAULT_DOMAIN=minikube
 DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
-DEFAULT_HOSTCTRL="ssh -i \`minikube ssh-key\` docker@\`minikube ip\`"
+DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
 DEFAULT_STORAGECLASS=$PWD/store/hostpath.sh
 DEFAULT_GPGKEYNAME=$USERNAME
 

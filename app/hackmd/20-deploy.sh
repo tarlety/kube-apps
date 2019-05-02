@@ -89,7 +89,7 @@ spec:
                   name: passwords
                   key: user-password
           ports:
-            - name: postgresql
+            - name: postgres
               containerPort: 5432
               protocol: TCP
           livenessProbe:

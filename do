@@ -274,6 +274,8 @@ case $1 in
 		case $2 in
 			"init")
 				admin/00-namespace.sh $APPNAME on
+				;;
+			"preflight")
 				admin/11-secrets.sh $APPNAME
 				admin/16-ing.sh $APPNAME $DOMAIN
 				admin/18-pvc.sh $APPNAME
@@ -319,7 +321,7 @@ case $1 in
 		echo $(basename $0) ssh ...
 		echo $(basename $0) "store create <namespace> <volname> <capacity> <volpath>"
 		echo $(basename $0) "store delete <namespace> <volname>"
-		echo $(basename $0) app appname init/clean/on/off/print
+		echo $(basename $0) app appname init/preflight/on/off/clean/print
 		;;
 esac
 

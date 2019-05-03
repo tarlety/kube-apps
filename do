@@ -34,6 +34,7 @@
 #------------------------------------------------------------------------------
 # Environments:
 
+VERSION=0.3.0
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
 SECRET=${SECRET:-".secret/$SCRIPTNAME"}
@@ -71,9 +72,13 @@ export DOMAIN
 # Commands
 
 case $1 in
+	"version")
+		echo ${VERSION}
+		;;
 	"env")
 		echo =========================================================================
 		echo "## SCRIPT NAME: $SCRIPTNAME"
+		echo - VERSION: $VERSION
 		echo - STORE: $STORE
 		echo - SECRET: $SECRET
 		echo - CONFIG: $CONFIG
@@ -312,6 +317,7 @@ case $1 in
 		esac
 		;;
 	*)
+		echo $(basename $0) version
 		echo $(basename $0) env
 		echo $(basename $0) config ...
 		echo $(basename $0) secret-create

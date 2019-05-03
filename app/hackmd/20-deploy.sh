@@ -2,8 +2,10 @@
 
 HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.3.1}
 #POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
-# The reason keeping postgres 9.6: The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.2
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6}
+# The reason keeping postgres 9.6:
+# 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.2.
+# 2. postgres 9.6 End of Life: 2021-09
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.12}
 POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.4.7}
 
 ACTION=$1

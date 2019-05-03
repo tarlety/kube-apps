@@ -149,7 +149,6 @@ case $1 in
 				echo "			Ex: $(basename $0) config gpg $DEFAULT_GPGKEYNAME"
 				;;
 		esac
-		$0 env > ${CONFIG}/env
 		;;
 	"secret-create")
 		shift

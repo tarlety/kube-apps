@@ -5,6 +5,8 @@
 # - state save/load with -C ${SECRET} or -C ${CONFIG}
 # - state save config: base_config is not saved
 # - default config/secret starts with ${PWD}
+# - script base name: zss0
+# derived: kube-apps-ctrl, docker-apps
 
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com

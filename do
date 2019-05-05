@@ -78,7 +78,7 @@ case $1 in
 	"env")
 		echo =========================================================================
 		echo "## SCRIPT NAME: $SCRIPTNAME"
-		echo - VERSION: $VERSION
+		echo - VERSION: ${VERSION}
 		echo - STORE: $STORE
 		echo - SECRET: $SECRET
 		echo - CONFIG: $CONFIG
@@ -205,27 +205,28 @@ case $1 in
 				fi
 				;;
 			"list"|*)
-				RED='\033[0;31m'
+				HC='\033[0;93m'
 				NC='\033[0m'
 				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
-					echo -e "${RED}## CONFIG: ${BASE_CONFIG}${NC}"
+					echo -e "${HC}## CONFIG: ${BASE_CONFIG}${NC}"
 					cd ${STORE}/state
-					ls *-$APPNAME-config.tgz 2>/dev/null | sed "s/-${APPNAME}-config.tgz//"
+					ls *-$APPNAME-config.tgz 2>/dev/null | sed "s/\(.*\)-${APPNAME}-config.tgz/           \1/"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
-					echo -e "${RED}## SECRET: ${BASE_SECRET}${NC}"
+					echo -e "${HC}## SECRET: ${BASE_SECRET}${NC}"
 					cd ${STORE}/state
-					ls *-$APPNAME-secret.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-secret.tgz.enc//"
+					ls *-$APPNAME-secret.tgz.enc 2>/dev/null | sed "s/\(.*\)-${APPNAME}-secret.tgz.enc/           \1/"
 					cd - &>/dev/null
 				fi
 				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
-					echo -e "${RED}## DATA: ${BASE_DATA}${NC}"
+					echo -e "${HC}## DATA  : ${BASE_DATA}${NC}"
 					cd ${STORE}/data
-					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/-${APPNAME}-data.tgz.enc//"
+					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/\(.*\)-${APPNAME}-data.tgz.enc/           \1/"
 					cd - &>/dev/null
 				fi
-				echo -e "${RED}## ENV: STATE | CURRENT${NC}"
+
+				echo -e "${HC}## ENV   : STATE                                              | CURRENT${NC}"
 				$0 env | colordiff -y --suppress-common-lines ${CONFIG}/env -
 				;;
 		esac

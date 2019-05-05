@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# 0.4.0 backlogs:
+# - all variables adds {}
+# - state save/load with -C ${SECRET} or -C ${CONFIG}
+# - state save config: base_config is not saved
+
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com
 #

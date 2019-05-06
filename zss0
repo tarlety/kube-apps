@@ -187,7 +187,7 @@ case $1 in
 				fi
 				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
 					echo ${STATENAME} > ${CONFIG}/base_secret
-					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc 0>/dev/null
+					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc &>/dev/null
 					cd ${SECRET}
 					tar -zc . | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
 					cd - &> /dev/null

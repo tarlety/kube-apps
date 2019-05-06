@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # 0.4.0 backlogs:
-# - state save/load with -C ${SECRET} or -C ${CONFIG}
-# - state save config: base_config is not saved
-# - default config/secret starts with ${PWD}
 # - script base name: zss0
 # derived: kube-apps-ctrl, docker-apps
 
@@ -44,8 +41,8 @@
 VERSION=0.3.0
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
-SECRET=${SECRET:-".secret/${SCRIPTNAME}"}
-CONFIG=${CONFIG:-".config/${SCRIPTNAME}"}
+SECRET=${SECRET:-"${PWD}/.secret/${SCRIPTNAME}"}
+CONFIG=${CONFIG:-"${PWD}/.config/${SCRIPTNAME}"}
 
 DEFAULT_STORE=${STORE:-".store/${SCRIPTNAME}"}
 DEFAULT_BASE_CONFIG=nop
@@ -183,32 +180,44 @@ case $1 in
 		case ${ACTION} in
 			"save")
 				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
-					$0 env > ${CONFIG}/env
-					tar -zcf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ${CONFIG}
 					echo ${STATENAME} > ${CONFIG}/base_config
+					$0 env > ${CONFIG}/env
+					cd ${CONFIG}
+					tar -zcf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz .
+					cd - &> /dev/null
 				fi
 				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
-					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc 0>/dev/null
-					tar -zc .secret | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
 					echo ${STATENAME} > ${CONFIG}/base_secret
+					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc 0>/dev/null
+					cd ${SECRET}
+					tar -zc . | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
+					cd - &> /dev/null
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
 					echo "DATA state not support."
-					echo ${STATENAME} > ${CONFIG}/base_data
 				fi
 				;;
 			"load")
 				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
-					[ -e ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ] && tar -zxf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz
+					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ]
+					then
+						cd ${CONFIG}
+						tar -zxf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz
+						cd - &> /dev/null
+					fi
 					echo ${STATENAME} > ${CONFIG}/base_config
 				fi
 				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
-					[ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ] && gpg -d ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc | tar xz
+					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ]
+					then
+						cd ${SECRET}
+						gpg -d ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc | tar xz
+						cd - &> /dev/null
+					fi
 					echo ${STATENAME} > ${CONFIG}/base_secret
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
 					echo "DATA state not support."
-					echo ${STATENAME} > ${CONFIG}/base_data
 				fi
 				;;
 			"list"|*)

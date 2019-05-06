@@ -1,13 +1,12 @@
 #!/bin/bash
 
 # 0.4.0 backlogs:
-# - script base name: zss0
-# derived: kube-apps-ctrl, docker-apps
+#  derived: kube-apps-ctrl, docker-apps
 
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.3.0
+# Zerus Scripting Standard v0.4.0
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -38,7 +37,7 @@
 #------------------------------------------------------------------------------
 # Environments:
 
-VERSION=0.3.0
+VERSION=0.4.0
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
 SECRET=${SECRET:-"${PWD}/.secret/${SCRIPTNAME}"}

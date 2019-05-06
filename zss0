@@ -274,7 +274,7 @@ case $1 in
 		;;
 	"ssh")
 		shift
-		eval ${HOSTCTRL} -- \"${*\"}
+		eval ${HOSTCTRL} -- \"$*\"
 		;;
 	"store")
 		shift

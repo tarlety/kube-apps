@@ -87,14 +87,14 @@ case $1 in
 		echo - CONFIG: ${CONFIG}
 		echo - DOMAIN: ${DOMAIN}
 		echo - SUBJECT: ${SUBJECT}
-		echo - KEY: $(ls ${KEY} 2>/dev/null) $(cat ${KEY} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
-		echo - CRT: $(ls ${CRT} 2>/dev/null) $(cat ${CRT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
-		echo - REQ: $(ls ${REQ} 2>/dev/null) $(cat ${REQ} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
-		echo - EXTFILE: $(ls ${EXTFILE} 2>/dev/null) $(cat ${EXTFILE} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - KEY: $(cat ${KEY} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - CRT:  $(cat ${CRT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - REQ:  $(cat ${REQ} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - EXTFILE:  $(cat ${EXTFILE} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
 		echo - HOSTCTRL: ${HOSTCTRL}
 		echo - STORAGECTRL: ${STORAGECTRL}
 		echo - GPGKEYNAME: ${GPGKEYNAME} $(gpg -k ${GPGKEYNAME} 2>/dev/null | sed -n '2p' | xargs)
-		echo - SALT: $(ls ${SALT} 2>/dev/null) $(cat ${SALT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - SALT: $(cat ${SALT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
 		echo "## REQUIREMENT:"
 		echo - minikube: $(which minikube)
 		echo - kubectl: $(which kubectl)

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # 0.4.0 backlogs:
-# - all variables adds {}
 # - state save/load with -C ${SECRET} or -C ${CONFIG}
 # - state save config: base_config is not saved
 # - default config/secret starts with ${PWD}
@@ -45,34 +44,34 @@
 VERSION=0.3.0
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
-SECRET=${SECRET:-".secret/$SCRIPTNAME"}
-CONFIG=${CONFIG:-".config/$SCRIPTNAME"}
+SECRET=${SECRET:-".secret/${SCRIPTNAME}"}
+CONFIG=${CONFIG:-".config/${SCRIPTNAME}"}
 
-DEFAULT_STORE=${STORE:-".store/$SCRIPTNAME"}
+DEFAULT_STORE=${STORE:-".store/${SCRIPTNAME}"}
 DEFAULT_BASE_CONFIG=nop
 DEFAULT_BASE_SECRET=nop
 DEFAULT_BASE_DATA=nop
 DEFAULT_DOMAIN=minikube
 DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
 DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
-DEFAULT_STORAGECTRL=$PWD/store/hostpath.sh
-DEFAULT_GPGKEYNAME=$USERNAME
+DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
+DEFAULT_GPGKEYNAME=${USERNAME}
 
 KEY=${SECRET}/cert.key
 CRT=${SECRET}/cert.crt
 REQ=${SECRET}/cert.req
 SALT=${SECRET}/salt
 
-STORE=`cat $CONFIG/store 2>/dev/null`
-BASE_CONFIG=`cat $CONFIG/base_config 2>/dev/null`
-BASE_SECRET=`cat $CONFIG/base_secret 2>/dev/null`
-BASE_DATA=`cat $CONFIG/base_data 2>/dev/null`
-EXTFILE=$CONFIG/v3.ext
-SUBJECT=`cat $CONFIG/subject 2>/dev/null`
-DOMAIN=`cat $CONFIG/domain 2>/dev/null`
-HOSTCTRL=`cat $CONFIG/hostctrl 2>/dev/null`
-STORAGECTRL=`cat $CONFIG/storagectrl 2>/dev/null`
-GPGKEYNAME=`cat $CONFIG/gpgkeyname 2>/dev/null`
+STORE=`cat ${CONFIG}/store 2>/dev/null`
+BASE_CONFIG=`cat ${CONFIG}/base_config 2>/dev/null`
+BASE_SECRET=`cat ${CONFIG}/base_secret 2>/dev/null`
+BASE_DATA=`cat ${CONFIG}/base_data 2>/dev/null`
+EXTFILE=${CONFIG}/v3.ext
+SUBJECT=`cat ${CONFIG}/subject 2>/dev/null`
+DOMAIN=`cat ${CONFIG}/domain 2>/dev/null`
+HOSTCTRL=`cat ${CONFIG}/hostctrl 2>/dev/null`
+STORAGECTRL=`cat ${CONFIG}/storagectrl 2>/dev/null`
+GPGKEYNAME=`cat ${CONFIG}/gpgkeyname 2>/dev/null`
 
 export DOMAIN
 
@@ -85,21 +84,21 @@ case $1 in
 		;;
 	"env")
 		echo =========================================================================
-		echo "## SCRIPT NAME: $SCRIPTNAME"
+		echo "## SCRIPT NAME: ${SCRIPTNAME}"
 		echo - VERSION: ${VERSION}
-		echo - STORE: $STORE
-		echo - SECRET: $SECRET
-		echo - CONFIG: $CONFIG
-		echo - DOMAIN: $DOMAIN
-		echo - SUBJECT: $SUBJECT
-		echo - KEY: $(ls $KEY 2>/dev/null) $(cat $KEY $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - CRT: $(ls $CRT 2>/dev/null) $(cat $CRT $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - REQ: $(ls $REQ 2>/dev/null) $(cat $REQ $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - EXTFILE: $(ls $EXTFILE 2>/dev/null) $(cat $EXTFILE $SALT 2>/dev/null | sha1sum | cut -c1-8)
-		echo - HOSTCTRL: $HOSTCTRL
-		echo - STORAGECTRL: $STORAGECTRL
-		echo - GPGKEYNAME: $GPGKEYNAME $(gpg -k $GPGKEYNAME 2>/dev/null | sed -n '2p' | xargs)
-		echo - SALT: $(ls $SALT 2>/dev/null) $(cat $SALT $SALT 2>/dev/null | sha1sum | cut -c1-8)
+		echo - STORE: ${STORE}
+		echo - SECRET: ${SECRET}
+		echo - CONFIG: ${CONFIG}
+		echo - DOMAIN: ${DOMAIN}
+		echo - SUBJECT: ${SUBJECT}
+		echo - KEY: $(ls ${KEY} 2>/dev/null) $(cat ${KEY} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - CRT: $(ls ${CRT} 2>/dev/null) $(cat ${CRT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - REQ: $(ls ${REQ} 2>/dev/null) $(cat ${REQ} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - EXTFILE: $(ls ${EXTFILE} 2>/dev/null) $(cat ${EXTFILE} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
+		echo - HOSTCTRL: ${HOSTCTRL}
+		echo - STORAGECTRL: ${STORAGECTRL}
+		echo - GPGKEYNAME: ${GPGKEYNAME} $(gpg -k ${GPGKEYNAME} 2>/dev/null | sed -n '2p' | xargs)
+		echo - SALT: $(ls ${SALT} 2>/dev/null) $(cat ${SALT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
 		echo "## REQUIREMENT:"
 		echo - minikube: $(which minikube)
 		echo - kubectl: $(which kubectl)
@@ -115,51 +114,51 @@ case $1 in
 		case $1 in
 			"store")
 				shift
-				STORE=${1:-$DEFAULT_STORE}
-				echo $STORE > ${CONFIG}/store
+				STORE=${1:-${DEFAULT_STORE}}
+				echo ${STORE} > ${CONFIG}/store
 				;;
 			"domain")
 				shift
-				DOMAIN=${1:-$DEFAULT_DOMAIN}
-				./templates/v3.ext.template "$DOMAIN" > $EXTFILE
-				echo $DOMAIN > ${CONFIG}/domain
+				DOMAIN=${1:-${DEFAULT_DOMAIN}}
+				./templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
+				echo ${DOMAIN} > ${CONFIG}/domain
 				;;
 			"subject")
 				shift
-				SUBJECT=${1:-$DEFAULT_SUBJECT}
-				echo $SUBJECT > ${CONFIG}/subject
+				SUBJECT=${1:-${DEFAULT_SUBJECT}}
+				echo ${SUBJECT} > ${CONFIG}/subject
 				;;
 			"hostctrl")
 				shift
-				HOSTCTRL=${1:-$DEFAULT_HOSTCTRL}
-				echo $HOSTCTRL > ${CONFIG}/hostctrl
+				HOSTCTRL=${1:-${DEFAULT_HOSTCTRL}}
+				echo ${HOSTCTRL} > ${CONFIG}/hostctrl
 				;;
 			"storagectrl")
 				shift
-				STORAGECTRL=${1:-$DEFAULT_STORAGECTRL}
-				echo $STORAGECTRL > ${CONFIG}/storagectrl
+				STORAGECTRL=${1:-${DEFAULT_STORAGECTRL}}
+				echo ${STORAGECTRL} > ${CONFIG}/storagectrl
 				;;
 			"gpg")
 				shift
-				GPGKEYNAME=${1:-$DEFAULT_GPGKEYNAME}
-				echo $GPGKEYNAME >  ${CONFIG}/gpgkeyname
+				GPGKEYNAME=${1:-${DEFAULT_GPGKEYNAME}}
+				echo ${GPGKEYNAME} >  ${CONFIG}/gpgkeyname
 				;;
 			*)
 				echo $(basename $0) config "<config_name>" "<config_value>"
 				echo ""
 				echo "config names:"
 				echo "	store		The local repository for state."
-				echo "			Ex: $(basename $0) config store $DEFAULT_STORE"
+				echo "			Ex: $(basename $0) config store ${DEFAULT_STORE}"
 				echo "	domain		the base domain name of the service."
-				echo "			Ex: $(basename $0) config domain $DEFAULT_DOMAIN"
+				echo "			Ex: $(basename $0) config domain ${DEFAULT_DOMAIN}"
 				echo "	subject		the certificate subject string."
-				echo "			Ex: $(basename $0) config subject $DEFAULT_SUBJECT"
+				echo "			Ex: $(basename $0) config subject ${DEFAULT_SUBJECT}"
 				echo "	hostctrl	The ctrl command to control host."
-				echo "			Ex: $(basename $0) config hostctrl \"$DEFAULT_HOSTCTRL\""
+				echo "			Ex: $(basename $0) config hostctrl '${DEFAULT_HOSTCTRL}'"
 				echo "	storagectrl	The storagectrl command to create pv."
-				echo "			Ex: $(basename $0) config storagectrl $DEFAULT_STORAGECTRL"
+				echo "			Ex: $(basename $0) config storagectrl ${DEFAULT_STORAGECTRL}"
 				echo "	gpg		configure which gpg key to use."
-				echo "			Ex: $(basename $0) config gpg $DEFAULT_GPGKEYNAME"
+				echo "			Ex: $(basename $0) config gpg ${DEFAULT_GPGKEYNAME}"
 				;;
 		esac
 		;;
@@ -168,10 +167,10 @@ case $1 in
 		mkdir -p ${SECRET}
 		chmod -R go-rwx ${SECRET}
 
-		openssl genrsa -out $KEY
-		openssl req -sha512 -new -key $KEY -out $REQ -subj $SUBJECT
-		openssl x509 -sha512 -req -days 365 -in $REQ -signkey $KEY -out $CRT -extfile $EXTFILE
-		gpg --gen-random --armor 2 16 | base64 | cut -c1-16 > $SALT
+		openssl genrsa -out ${KEY}
+		openssl req -sha512 -new -key ${KEY} -out ${REQ} -subj ${SUBJECT}
+		openssl x509 -sha512 -req -days 365 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}
+		gpg --gen-random --armor 2 16 | base64 | cut -c1-16 > ${SALT}
 		$0 env > ${CONFIG}/env
 		;;
 	"state")
@@ -181,53 +180,53 @@ case $1 in
 		STATENAME=$3
 
 		mkdir -p ${STORE}/state ${STORE}/data
-		case $ACTION in
+		case ${ACTION} in
 			"save")
-				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
 					$0 env > ${CONFIG}/env
-					tar -zcf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz ${CONFIG}
-					echo $STATENAME > ${CONFIG}/base_config
+					tar -zcf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ${CONFIG}
+					echo ${STATENAME} > ${CONFIG}/base_config
 				fi
-				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
-					mv -f ${STORE}/state/$STATENAME-$APPNAME-secret.tgz.enc ${STORE}/state/$STATENAME-bak-$APPNAME-secret.tgz.enc 2>/dev/null
-					tar -zc .secret | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc
-					echo $STATENAME > ${CONFIG}/base_secret
+				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
+					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc 0>/dev/null
+					tar -zc .secret | gpg -ear ${GPGKEYNAME} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
+					echo ${STATENAME} > ${CONFIG}/base_secret
 				fi
-				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
 					echo "DATA state not support."
-					echo $STATENAME > ${CONFIG}/base_data
+					echo ${STATENAME} > ${CONFIG}/base_data
 				fi
 				;;
 			"load")
-				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
-					[ -e ${STORE}/state/$STATENAME-${APPNAME}-config.tgz ] && tar -zxf ${STORE}/state/$STATENAME-${APPNAME}-config.tgz
-					echo $STATENAME > ${CONFIG}/base_config
+				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
+					[ -e ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ] && tar -zxf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz
+					echo ${STATENAME} > ${CONFIG}/base_config
 				fi
-				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
-					[ -e ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc ] && gpg -d ${STORE}/state/$STATENAME-${APPNAME}-secret.tgz.enc | tar xz
-					echo $STATENAME > ${CONFIG}/base_secret
+				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
+					[ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ] && gpg -d ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc | tar xz
+					echo ${STATENAME} > ${CONFIG}/base_secret
 				fi
-				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
 					echo "DATA state not support."
-					echo $STATENAME > ${CONFIG}/base_data
+					echo ${STATENAME} > ${CONFIG}/base_data
 				fi
 				;;
 			"list"|*)
 				HC='\033[0;93m'
 				NC='\033[0m'
-				if [ "$TYPE" == "config" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
 					echo -e "${HC}## CONFIG: ${BASE_CONFIG}${NC}"
 					cd ${STORE}/state
-					ls *-$APPNAME-config.tgz 2>/dev/null | sed "s/\(.*\)-${APPNAME}-config.tgz/           \1/"
+					ls *-${APPNAME}-config.tgz 2>/dev/null | sed "s/\(.*\)-${APPNAME}-config.tgz/           \1/"
 					cd - &>/dev/null
 				fi
-				if [ "$TYPE" == "secret" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
 					echo -e "${HC}## SECRET: ${BASE_SECRET}${NC}"
 					cd ${STORE}/state
-					ls *-$APPNAME-secret.tgz.enc 2>/dev/null | sed "s/\(.*\)-${APPNAME}-secret.tgz.enc/           \1/"
+					ls *-${APPNAME}-secret.tgz.enc 2>/dev/null | sed "s/\(.*\)-${APPNAME}-secret.tgz.enc/           \1/"
 					cd - &>/dev/null
 				fi
-				if [ "$TYPE" == "data" -o "$TYPE" == "" ]; then
+				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
 					echo -e "${HC}## DATA  : ${BASE_DATA}${NC}"
 					cd ${STORE}/data
 					ls *-${APPNAME}-data.tgz.enc 2>/dev/null | sed "s/\(.*\)-${APPNAME}-data.tgz.enc/           \1/"
@@ -267,15 +266,15 @@ case $1 in
 		;;
 	"ssh")
 		shift
-		eval $HOSTCTRL -- \"$*\"
+		eval ${HOSTCTRL} -- \"${*\"}
 		;;
 	"store")
 		shift
 		ACTION=$1
 		shift
-		case $ACTION in
+		case ${ACTION} in
 			"create")
-				eval $STORAGECTRL $1 $2 $3 $4 $5
+				eval ${STORAGECTRL} $1 $2 $3 $4 $5
 				;;
 			"delete")
 				kubectl delete pv $1-$2
@@ -287,41 +286,41 @@ case $1 in
 		APPNAME=$1
 		case $2 in
 			"init")
-				admin/00-namespace.sh $APPNAME on
+				admin/00-namespace.sh ${APPNAME} on
 				;;
 			"preflight")
-				admin/11-secrets.sh $APPNAME
-				admin/16-ing.sh $APPNAME $DOMAIN
-				admin/18-pvc.sh $APPNAME
+				admin/11-secrets.sh ${APPNAME}
+				admin/16-ing.sh ${APPNAME} ${DOMAIN}
+				admin/18-pvc.sh ${APPNAME}
 				;;
 			"clean")
-				admin/00-namespace.sh $APPNAME off
+				admin/00-namespace.sh ${APPNAME} off
 				;;
 			"on")
-				app/$APPNAME/10-configmap.sh on
-				app/$APPNAME/20-deploy.sh on
-				app/$APPNAME/40-svc.sh on
+				app/${APPNAME}/10-configmap.sh on
+				app/${APPNAME}/20-deploy.sh on
+				app/${APPNAME}/40-svc.sh on
 				;;
 			"off")
-				app/$APPNAME/10-configmap.sh off
-				app/$APPNAME/20-deploy.sh off
-				app/$APPNAME/40-svc.sh off
+				app/${APPNAME}/10-configmap.sh off
+				app/${APPNAME}/20-deploy.sh off
+				app/${APPNAME}/40-svc.sh off
 				;;
 			"print")
-				kubectl get all -n app-$APPNAME
-				kubectl get pvc -n app-$APPNAME
+				kubectl get all -n app-${APPNAME}
+				kubectl get pvc -n app-${APPNAME}
 				echo ---------------------------------------------------------------------
 				echo \#\# Persistent Volume Claim
-				kubectl get pvc -n app-$APPNAME
+				kubectl get pvc -n app-${APPNAME}
 				echo ---------------------------------------------------------------------
 				echo \#\# Persistent Volume
-				kubectl get pv | grep "app-$APPNAME"
+				kubectl get pv | grep "app-${APPNAME}"
 				echo ---------------------------------------------------------------------
 				echo \#\# Configure Map
-				kubectl get configmap -n app-$APPNAME
+				kubectl get configmap -n app-${APPNAME}
 				echo ---------------------------------------------------------------------
 				echo \#\# Secrets
-				kubectl get secret -n app-$APPNAME
+				kubectl get secret -n app-${APPNAME}
 				;;
 		esac
 		;;

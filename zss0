@@ -37,13 +37,13 @@
 #------------------------------------------------------------------------------
 # Environments:
 
-VERSION=0.4.0
+VERSION=0.4.1
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
 SECRET=${SECRET:-"${PWD}/.secret/${SCRIPTNAME}"}
 CONFIG=${CONFIG:-"${PWD}/.config/${SCRIPTNAME}"}
 
-DEFAULT_STORE=${STORE:-".store/${SCRIPTNAME}"}
+DEFAULT_STORE=${STORE:-"${PWD}/.store/${SCRIPTNAME}"}
 DEFAULT_BASE_CONFIG=nop
 DEFAULT_BASE_SECRET=nop
 DEFAULT_BASE_DATA=nop

@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# 0.4.0 backlogs:
-#  derived: kube-apps-ctrl, docker-apps
+# 0.5.0 backlogs:
+# - integrated store for secret/config/data
+# - integrated framework for all different script and app
+# derived: kube-apps-ctrl, docker-apps, node-adm, zerus-test
 
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com
@@ -37,7 +39,7 @@
 #------------------------------------------------------------------------------
 # Environments:
 
-VERSION=0.4.1
+VERSION=0.4.2
 SCRIPTNAME=kube-apps
 APPNAME=kube-apps
 SECRET=${SECRET:-"${PWD}/.secret/${SCRIPTNAME}"}
@@ -83,13 +85,10 @@ case $1 in
 		echo "## SCRIPT NAME: ${SCRIPTNAME}"
 		echo - VERSION: ${VERSION}
 		echo - STORE: ${STORE}
-		echo - SECRET: ${SECRET}
+		echo - SECRET: $SECRET $(echo $(cat $SALT 2>/dev/null) $(cat ${SECRET}/* | sha256sum 2>/dev/null) | sha1sum | cut -c1-8)
 		echo - CONFIG: ${CONFIG}
 		echo - DOMAIN: ${DOMAIN}
 		echo - SUBJECT: ${SUBJECT}
-		echo - KEY: $(cat ${KEY} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
-		echo - CRT:  $(cat ${CRT} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
-		echo - REQ:  $(cat ${REQ} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
 		echo - EXTFILE:  $(cat ${EXTFILE} ${SALT} 2>/dev/null | sha1sum | cut -c1-8)
 		echo - HOSTCTRL: ${HOSTCTRL}
 		echo - STORAGECTRL: ${STORAGECTRL}
@@ -167,7 +166,6 @@ case $1 in
 		openssl req -sha512 -new -key ${KEY} -out ${REQ} -subj ${SUBJECT}
 		openssl x509 -sha512 -req -days 365 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}
 		gpg --gen-random --armor 2 16 | base64 | cut -c1-16 > ${SALT}
-		$0 env > ${CONFIG}/env
 		;;
 	"state")
 		shift

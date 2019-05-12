@@ -2,8 +2,17 @@
 
 # 0.5.0 backlogs:
 # - integrated store for secret/config/data
+#   - store/zss/scritpname/appname/config
+#   - store/zss/scritpname/appname/secret
+#   - store/zss/scritpname/appname/data
+#   - store/zss/scritpname/appname/state
+#     - *-config.tgz
+#     - *-secret.tgz.enc
+#     - *-data.tgz.enc
 # - integrated framework for all different script and app
-# derived: kube-apps-ctrl, docker-apps, node-adm, zerus-test
+#   - derived: kube-apps-ctrl, docker-apps, node-adm, zerus-test
+# - certificate as secret files shall be encrypted
+# - save to current state-name by default
 
 #------------------------------------------------------------------------------
 # Copyright (c) 2019, tarlety@gmail.com

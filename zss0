@@ -2,10 +2,10 @@
 
 # 0.5.0 backlogs:
 # - integrated store for secret/config/data
-#   - store/zss/scritpname/appname/config
-#   - store/zss/scritpname/appname/secret
-#   - store/zss/scritpname/appname/data
-#   - store/zss/scritpname/appname/state
+#   - store/zss/projectname/appname/config
+#   - store/zss/projectname/appname/secret
+#   - store/zss/projectname/appname/data
+#   - store/zss/projectname/appname/state
 #     - *-config.tgz
 #     - *-secret.tgz.enc
 #     - *-data.tgz.enc

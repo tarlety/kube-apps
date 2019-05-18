@@ -144,7 +144,7 @@ case $1 in
 				KEY=$1
 				VALUE_VAR=$(echo DEFAULT_${KEY} | tr '[:lower:]' '[:upper:]')
 				VALUE=${2:-$(eval echo \${${VALUE_VAR}})}
-				eval echo ${VALUE} > ${CONFIG}/${KEY}
+				eval echo \'${VALUE}\' > ${CONFIG}/${KEY}
 				;;
 			"gpgkey")
 				shift

@@ -6,7 +6,7 @@
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.4.0
+# Zerus Scripting Standard v0.5.1
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -55,7 +55,7 @@
 #==============================================================================
 # Environments:
 
-VERSION=0.5.0
+VERSION=0.5.1
 PROJECTNAME=zerus
 APPNAME=kube-apps-platform
 STORE=${ZSS_STORE:-"${PWD}/.store"}/${PROJECTNAME}/${APPNAME}
@@ -67,33 +67,33 @@ STATE=${STATE:-"${STORE}/state"}
 BASE_CONFIG=`cat ${CONFIG}/base_config 2>/dev/null`
 BASE_SECRET=`cat ${CONFIG}/base_secret 2>/dev/null`
 BASE_DATA=`cat ${CONFIG}/base_data 2>/dev/null`
-
 SALT=${SECRET}/salt
+
+DEFAULT_GPGKEY=${USERNAME}
 
 # AppImplementing Section: configs
 #------------------------------------------------------------------------------
-CONFIGKEYS="domain subject hostctrl storagectrl gpgkey"
+CONFIGKEYS="domain subject hostctrl storagectrl"
 declare -A CONFIG_DESCRIPTIONS
 CONFIG_DESCRIPTIONS=( \
 	["domain"]="the base domain name of the service." \
 	["subject"]="the certificate subject string." \
 	["hostctrl"]="the ctrl command to control host." \
 	["storagectrl"]="the storagectrl command to create pv." \
-	["gpgkey"]="configure which gpg key to use." \
 	)
 
 DEFAULT_DOMAIN=minikube
 DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
 DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
 DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
-DEFAULT_GPGKEY=${USERNAME}
 
 DOMAIN=`cat ${CONFIG}/domain 2>/dev/null`
 SUBJECT=`cat ${CONFIG}/subject 2>/dev/null`
 HOSTCTRL=`cat ${CONFIG}/hostctrl 2>/dev/null`
 STORAGECTRL=`cat ${CONFIG}/storagectrl 2>/dev/null`
-GPGKEY=`cat ${CONFIG}/gpgkey 2>/dev/null`
 #------------------------------------------------------------------------------
+
+GPGKEY=`cat ${CONFIG}/gpgkey 2>/dev/null`
 
 eval export $(echo ${CONFIGKEYS} | tr '[:lower:]' '[:upper:]')
 
@@ -115,10 +115,7 @@ case $1 in
 			KEY=$(echo ${KEY} | tr '[:lower:]' '[:upper:]')
 			eval echo - ${KEY}: \${${KEY}}
 		done
-		# AppImplementing Section: env
-		#------------------------------------------------------------------------------
-		echo - GPGKEY fingerprint: $(gpg -k ${GPGKEY} 2>/dev/null | sed -n '2p' | xargs)
-		#------------------------------------------------------------------------------
+		echo - GPGKEY: ${GPGKEY} $(gpg -k ${GPGKEY} 2>/dev/null | sed -n '2p' | xargs)
 		echo "## REQUIREMENT:"
 		# AppImplementing Section: requirement
 		#------------------------------------------------------------------------------
@@ -135,12 +132,19 @@ case $1 in
 		shift
 		mkdir -p ${CONFIG}
 		case $1 in
-			# APP Implementing Section: config cases
-			"domain"|"subject"|"hostctrl"|"storagectrl"|"gpgkey")
+			# AppImplementing Section: config cases
+			#------------------------------------------------------------------------------
+			"domain"|"subject"|"hostctrl"|"storagectrl")
+			#------------------------------------------------------------------------------
 				KEY=$1
 				VALUE_VAR=$(echo DEFAULT_${KEY} | tr '[:lower:]' '[:upper:]')
 				VALUE=${2:-$(eval echo \${${VALUE_VAR}})}
 				eval echo ${VALUE} > ${CONFIG}/${KEY}
+				;;
+			"gpgkey")
+				shift
+				GPGKEY=${1:-${DEFAULT_GPGKEY}}
+				echo ${GPGKEY} >  ${CONFIG}/gpgkey
 				;;
 			*)
 				echo "Usage: $(basename $0) config <key> <value>"
@@ -155,6 +159,8 @@ case $1 in
 					echo " ${KEY}: ${DESCRIPTION}"
 					echo "	Ex: $(basename $0) config ${KEY} ${VALUE}"
 				done
+				echo " gpgkey: configure which gpg key to use."
+				echo "	Ex: $(basename $0) config gpgkey ${DEFAULT_GPGKEY}"
 				;;
 		esac
 		;;
@@ -202,11 +208,18 @@ case $1 in
 					echo ${STATENAME} > ${CONFIG}/base_secret
 					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc &>/dev/null
 					cd ${SECRET}
-					tar -zc . | gpg -ear ${GPGKEY} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
+					# AppImplementing Section: secret save
+					#------------------------------------------------------------------------------
+					tar -zc . | \
+						gpg -ear ${GPGKEY} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
+					#------------------------------------------------------------------------------
 					cd - &> /dev/null
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
+					# AppImplementing Section: data save
+					#------------------------------------------------------------------------------
 					echo "DATA state not support."
+					#------------------------------------------------------------------------------
 				fi
 				;;
 			"load")
@@ -223,13 +236,19 @@ case $1 in
 					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ]
 					then
 						cd ${SECRET}
+						# AppImplementing Section: secret load
+						#------------------------------------------------------------------------------
 						gpg -d ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc | tar xz
+						#------------------------------------------------------------------------------
 						cd - &> /dev/null
 					fi
 					echo ${STATENAME} > ${CONFIG}/base_secret
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
+					# AppImplementing Section: data load
+					#------------------------------------------------------------------------------
 					echo "DATA state not support."
+					#------------------------------------------------------------------------------
 				fi
 				;;
 			"list"|*)

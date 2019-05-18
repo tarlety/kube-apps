@@ -91,6 +91,11 @@ DOMAIN=`cat ${CONFIG}/domain 2>/dev/null`
 SUBJECT=`cat ${CONFIG}/subject 2>/dev/null`
 HOSTCTRL=`cat ${CONFIG}/hostctrl 2>/dev/null`
 STORAGECTRL=`cat ${CONFIG}/storagectrl 2>/dev/null`
+
+EXTFILE=${SECRET}/v3.ext
+KEY=${SECRET}/cert.key
+CRT=${SECRET}/cert.crt
+REQ=${SECRET}/cert.req
 #------------------------------------------------------------------------------
 
 GPGKEY=`cat ${CONFIG}/gpgkey 2>/dev/null`
@@ -171,10 +176,7 @@ case $1 in
 
 		# AppImplementing Section: secret-create
 		#------------------------------------------------------------------------------
-		EXTFILE=${SECRET}/v3.ext
-		KEY=${SECRET}/cert.key
-		CRT=${SECRET}/cert.crt
-		REQ=${SECRET}/cert.req
+		rm -f ${KEY}.enc ${REQ}.enc ${CRT}.enc
 
 		$(dirname $0)/templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
 		openssl genrsa -out ${KEY}
@@ -183,6 +185,7 @@ case $1 in
 		gpg -ear ${GPGKEY} -o ${KEY}.enc ${KEY}
 		gpg -ear ${GPGKEY} -o ${REQ}.enc ${REQ}
 		gpg -ear ${GPGKEY} -o ${CRT}.enc ${CRT}
+
 		rm ${KEY} ${REQ} ${CRT} ${EXTFILE}
 		#------------------------------------------------------------------------------
 

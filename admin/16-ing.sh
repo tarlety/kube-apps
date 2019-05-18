@@ -1,7 +1,6 @@
 #!/bin/bash
 
 APPNAME=$1
-DOMAIN=$2
 
 cat <<EOF | kubectl create -f -
 apiVersion: extensions/v1beta1

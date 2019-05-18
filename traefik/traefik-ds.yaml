@@ -23,9 +23,12 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: true
       volumes:
-      - name: secret
+      - name: secret-cert-crt
         secret:
-          secretName: traefik-cert
+          secretName: traefik-cert-crt
+      - name: secret-cert-key
+        secret:
+          secretName: traefik-cert-key
       - name: config
         configMap:
           name: traefik-conf
@@ -33,8 +36,12 @@ spec:
       - image: traefik
         name: traefik-ingress-lb
         volumeMounts:
-        - mountPath: "/secret"
-          name: secret
+        - mountPath: "/secret/cert.crt"
+          name: secret-cert-crt
+          subPath: cert.crt
+        - mountPath: "/secret/cert.key"
+          name: secret-cert-key
+          subPath: cert.key
         - mountPath: "/config"
           name: config
         ports:

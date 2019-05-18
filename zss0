@@ -211,11 +211,8 @@ case $1 in
 					echo ${STATENAME} > ${CONFIG}/base_secret
 					mv -f ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ${STORE}/state/${STATENAME}-bak-${APPNAME}-secret.tgz.enc &>/dev/null
 					cd ${SECRET}
-					# AppImplementing Section: secret save
-					#------------------------------------------------------------------------------
 					tar -zc . | \
 						gpg -ear ${GPGKEY} -o ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc
-					#------------------------------------------------------------------------------
 					cd - &> /dev/null
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then

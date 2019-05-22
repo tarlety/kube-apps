@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 0.6.0 backlogs
-#   - derived: kube-apps-ctrl, docker-apps, node-adm, zerus-test
+#   - derived: kube-apps-ctrl, docker-apps, node-adm, ceph-adm, kube-adm, zerus-test
 
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com

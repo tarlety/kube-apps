@@ -125,7 +125,6 @@ case $1 in
 		echo "## REQUIREMENT:"
 		# AppImplementing Section: requirement
 		#------------------------------------------------------------------------------
-		echo - minikube: $(which minikube)
 		echo - kubectl: $(which kubectl)
 		echo - openssl: $(which openssl)
 		#------------------------------------------------------------------------------

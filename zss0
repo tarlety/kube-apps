@@ -318,12 +318,17 @@ case $1 in
 		shift
 		ACTION=$1
 		shift
+		NAMESPACE=$1
+		PVCNAME=$2
+		CAPACITY=$3
+		PATHNAME=$4
+		TYPENAME=$5
 		case ${ACTION} in
 			"create")
-				eval ${STORAGECTRL} $1 $2 $3 $4 $5
+				eval ${STORAGECTRL} ${NAMESPACE} ${PVCNAME} ${CAPACITY} ${PATHNAME} ${TYPENAME}
 				;;
 			"delete")
-				kubectl delete pv $1-$2
+				kubectl delete pv ${NAMESPACE}-${PVCNAME}
 				;;
 		esac
 		;;

@@ -1,16 +1,19 @@
 #!/bin/bash
 
-NAMESPACE=$1
-PVCNAME=$2
-CAPACITY=$3
-HOSTPATH=$4
+ACTION=$1
+NAMESPACE=$2
+PVCNAME=$3
+CAPACITY=$4
+HOSTPATH=$5
 
-if [ "$NAMESPACE" == "" ] || [ "$PVCNAME" == "" ] || [ "$CAPACITY" == "" ] || [ "$HOSTPATH" == "" ] ; then
-	echo Ex: $0 namespace pvc-name 5Gi /data/vol-path
-	exit 1
-fi
+case ${ACTION} in
+	"create")
+		if [ "$NAMESPACE" == "" ] || [ "$PVCNAME" == "" ] || [ "$CAPACITY" == "" ] || [ "$HOSTPATH" == "" ] ; then
+			echo Ex: $0 namespace pvc-name 5Gi /data/vol-path
+			exit 1
+		fi
 
-cat <<EOF | kubectl create -f -
+		cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -26,3 +29,10 @@ spec:
   hostPath:
     path: ${HOSTPATH}
 EOF
+		;;
+	"delete")
+		kubectl delete pv ${NAMESPACE}-${PVCNAME}
+		;;
+	"secret")
+		;;
+esac

@@ -2,6 +2,7 @@
 
 # 0.6.0 backlogs
 #   - derived: kube-apps-ctrl, docker-apps, node-adm, ceph-adm, kube-adm, zerus-test
+#   - be node-adm and ceph-adm aware
 
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
@@ -317,18 +318,20 @@ case $1 in
 	"store")
 		shift
 		ACTION=$1
-		shift
-		NAMESPACE=$1
-		PVCNAME=$2
-		CAPACITY=$3
-		PATHNAME=$4
-		TYPENAME=$5
+		NAMESPACE=$2
+		PVCNAME=$3
+		CAPACITY=$4
+		PATHNAME=$5
+		TYPENAME=$6
 		case ${ACTION} in
 			"create")
-				eval ${STORAGECTRL} ${NAMESPACE} ${PVCNAME} ${CAPACITY} ${PATHNAME} ${TYPENAME}
+				eval ${STORAGECTRL} create ${NAMESPACE} ${PVCNAME} ${CAPACITY} ${PATHNAME} ${TYPENAME}
 				;;
 			"delete")
-				kubectl delete pv ${NAMESPACE}-${PVCNAME}
+				eval ${STORAGECTRL} delete ${NAMESPACE} ${PVCNAME}
+				;;
+			"secret")
+				eval ${STORAGECTRL} secret ${NAMESPACE}
 				;;
 		esac
 		;;
@@ -389,6 +392,7 @@ case $1 in
 		echo $(basename $0) ssh ...
 		echo $(basename $0) "store create <namespace> <volname> <capacity> <volpath>"
 		echo $(basename $0) "store delete <namespace> <volname>"
+		echo $(basename $0) "store secret <namespace>"
 		echo $(basename $0) app appname init/preflight/on/off/clean/print
 		#------------------------------------------------------------------------------
 		;;

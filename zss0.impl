@@ -1,0 +1,173 @@
+#!/bin/bash
+
+# private var
+
+EXTFILE=${SECRET}/v3.ext
+KEY=${SECRET}/cert.key
+CRT=${SECRET}/cert.crt
+REQ=${SECRET}/cert.req
+
+# zss interface
+
+case $1 in
+	"app")
+		PROJECTNAME=zerus
+		APPNAME=kube-apps-platform
+		APPVERSION=0.1.0
+		;;
+	"config")
+		CONFIGKEYS="domain subject hostctrl storagectrl"
+		declare -A CONFIG_DESCRIPTIONS
+		CONFIG_DESCRIPTIONS=( \
+			["domain"]="the base domain name of the service." \
+			["subject"]="the certificate subject string." \
+			["hostctrl"]="the ctrl command to control host." \
+			["storagectrl"]="the storagectrl command to create pv." \
+			)
+
+		DEFAULT_DOMAIN=minikube
+		DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
+		DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
+		DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
+		;;
+	"requirement")
+		echo - kubectl: $(which kubectl)
+		echo - openssl: $(which openssl)
+		;;
+	"secret-create")
+		rm -f ${KEY}.enc ${REQ}.enc ${CRT}.enc
+
+		$(dirname $0)/templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
+		openssl genrsa -out ${KEY}
+		openssl req -sha512 -new -key ${KEY} -out ${REQ} -subj ${SUBJECT}
+		openssl x509 -sha512 -req -days 365 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}
+		gpg -ear ${GPGKEY} -o ${KEY}.enc ${KEY}
+		gpg -ear ${GPGKEY} -o ${REQ}.enc ${REQ}
+		gpg -ear ${GPGKEY} -o ${CRT}.enc ${CRT}
+
+		rm ${KEY} ${REQ} ${CRT} ${EXTFILE}
+		;;
+	"state-data-save")
+		echo "DATA state not support."
+		;;
+	"state-secret-load-post")
+		;;
+	"state-data-load")
+		echo "DATA state not support."
+		;;
+	# AppImplementing Section: commands
+	#------------------------------------------------------------------------------
+	"command")
+		shift
+		case $1 in
+		"certs")
+			shift
+			case $1 in
+				"on")
+					gpg -d ${KEY}.enc | \
+						kubectl create secret generic traefik-cert-key --from-file=cert.key=/dev/stdin -n kube-system
+					gpg -d ${CRT}.enc | \
+						kubectl create secret generic traefik-cert-crt --from-file=cert.crt=/dev/stdin -n kube-system
+					;;
+				"off")
+					kubectl delete secret traefik-cert-key -n kube-system
+					kubectl delete secret traefik-cert-crt -n kube-system
+					;;
+			esac
+			;;
+		"ing")
+			shift
+			case $1 in
+				"on")
+					kubectl create configmap traefik-conf -n kube-system --from-file=traefik.toml=traefik/traefik.toml
+					kubectl apply -f traefik/traefik-rbac.yaml
+					kubectl apply -f traefik/traefik-ds.yaml
+					;;
+				"off")
+					kubectl delete -f traefik/traefik-ds.yaml
+					kubectl delete -f traefik/traefik-rbac.yaml
+					kubectl delete configmap traefik-conf -n kube-system
+					;;
+			esac
+			;;
+		"ssh")
+			shift
+			eval ${HOSTCTRL} -- \"$*\"
+			;;
+		"store")
+			shift
+			ACTION=$1
+			NAMESPACE=$2
+			PVCNAME=$3
+			CAPACITY=$4
+			PATHNAME=$5
+			TYPENAME=$6
+			case ${ACTION} in
+				"create")
+					eval ${STORAGECTRL} create ${NAMESPACE} ${PVCNAME} ${CAPACITY} ${PATHNAME} ${TYPENAME}
+					;;
+				"delete")
+					eval ${STORAGECTRL} delete ${NAMESPACE} ${PVCNAME}
+					;;
+				"secret")
+					eval ${STORAGECTRL} secret ${NAMESPACE}
+					;;
+			esac
+			;;
+		"app")
+			shift
+			APPNAME=$1
+			case $2 in
+				"init")
+					admin/00-namespace.sh ${APPNAME} on
+					;;
+				"preflight")
+					admin/11-secrets.sh ${APPNAME}
+					admin/16-ing.sh ${APPNAME}
+					admin/18-pvc.sh ${APPNAME}
+					;;
+				"clean")
+					admin/00-namespace.sh ${APPNAME} off
+					;;
+				"on")
+					app/${APPNAME}/10-configmap.sh on
+					app/${APPNAME}/20-deploy.sh on
+					app/${APPNAME}/40-svc.sh on
+					;;
+				"off")
+					app/${APPNAME}/10-configmap.sh off
+					app/${APPNAME}/20-deploy.sh off
+					app/${APPNAME}/40-svc.sh off
+					;;
+				"print")
+					kubectl get all -n app-${APPNAME}
+					kubectl get pvc -n app-${APPNAME}
+					echo ---------------------------------------------------------------------
+					echo \#\# Persistent Volume Claim
+					kubectl get pvc -n app-${APPNAME}
+					echo ---------------------------------------------------------------------
+					echo \#\# Persistent Volume
+					kubectl get pv | grep "app-${APPNAME}"
+					echo ---------------------------------------------------------------------
+					echo \#\# Configure Map
+					kubectl get configmap -n app-${APPNAME}
+					echo ---------------------------------------------------------------------
+					echo \#\# Secrets
+					kubectl get secret -n app-${APPNAME}
+					;;
+			esac
+			;;
+		esac
+		;;
+	#------------------------------------------------------------------------------
+	"usage")
+		echo $(basename $0) certs on/off
+		echo $(basename $0) ing on/off
+		echo $(basename $0) ssh ...
+		echo $(basename $0) "store create <namespace> <volname> <capacity> <volpath>"
+		echo $(basename $0) "store delete <namespace> <volname>"
+		echo $(basename $0) "store secret <namespace>"
+		echo $(basename $0) app appname init/preflight/on/off/clean/print
+		;;
+esac
+

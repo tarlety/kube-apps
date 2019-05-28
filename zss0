@@ -7,7 +7,7 @@
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.5.1
+# Zerus Scripting Standard v0.5.2
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -56,10 +56,13 @@
 #==============================================================================
 # Environments:
 
-VERSION=0.5.1
+VERSION=0.5.2
+# AppImplementing Section: app
+#------------------------------------------------------------------------------
 PROJECTNAME=zerus
 APPNAME=kube-apps-platform
-STORE=${ZSS_STORE:-"${PWD}/.store"}/${PROJECTNAME}/${APPNAME}
+#------------------------------------------------------------------------------
+STORE=${ZSS_STORE:-"${HOME}/store"}/${PROJECTNAME}/${APPNAME}
 SECRET=${SECRET:-"${STORE}/secret"}
 CONFIG=${CONFIG:-"${STORE}/config"}
 DATA=${DATA:-"${STORE}/data"}
@@ -88,16 +91,17 @@ DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
 DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
 DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
 
-DOMAIN=`cat ${CONFIG}/domain 2>/dev/null`
-SUBJECT=`cat ${CONFIG}/subject 2>/dev/null`
-HOSTCTRL=`cat ${CONFIG}/hostctrl 2>/dev/null`
-STORAGECTRL=`cat ${CONFIG}/storagectrl 2>/dev/null`
-
 EXTFILE=${SECRET}/v3.ext
 KEY=${SECRET}/cert.key
 CRT=${SECRET}/cert.crt
 REQ=${SECRET}/cert.req
 #------------------------------------------------------------------------------
+
+for KEY in ${CONFIGKEYS}
+do
+	VARNAME=$(echo ${KEY} | tr '[:lower:]' '[:upper:]')
+	eval ${VARNAME}='$(cat ${CONFIG}/$KEY 2>/dev/null)'
+done
 
 GPGKEY=`cat ${CONFIG}/gpgkey 2>/dev/null`
 

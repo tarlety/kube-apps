@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# private var
-
-EXTFILE=${SECRET}/v3.ext
-KEY=${SECRET}/cert.key
-CRT=${SECRET}/cert.crt
-REQ=${SECRET}/cert.req
-
 # zss interface
 
 case $1 in
@@ -29,6 +22,12 @@ case $1 in
 		DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
 		DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
 		DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
+		;;
+	"vars")
+		EXTFILE=${SECRET}/v3.ext
+		KEY=${SECRET}/cert.key
+		CRT=${SECRET}/cert.crt
+		REQ=${SECRET}/cert.req
 		;;
 	"requirement")
 		echo - kubectl: $(which kubectl)

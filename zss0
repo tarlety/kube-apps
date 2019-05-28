@@ -210,6 +210,7 @@ case $1 in
 					cd - &> /dev/null
 				fi
 				if [ "${TYPE}" == "data" -o "${TYPE}" == "" ]; then
+					echo ${STATENAME} > ${CONFIG}/base_data
 					# AppImplementing Section: data save
 					#------------------------------------------------------------------------------
 					source ./zss0.impl state-data-save
@@ -218,8 +219,7 @@ case $1 in
 				;;
 			"load")
 				if [ "${TYPE}" == "config" -o "${TYPE}" == "" ]; then
-					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ]
-					then
+					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz ]; then
 						cd ${CONFIG}
 						tar -zxf ${STORE}/state/${STATENAME}-${APPNAME}-config.tgz
 						cd - &> /dev/null
@@ -227,12 +227,11 @@ case $1 in
 					echo ${STATENAME} > ${CONFIG}/base_config
 				fi
 				if [ "${TYPE}" == "secret" -o "${TYPE}" == "" ]; then
-					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ]
-					then
+					if [ -e ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc ]; then
 						cd ${SECRET}
 						gpg -d ${STORE}/state/${STATENAME}-${APPNAME}-secret.tgz.enc | tar xz
 						cd - &> /dev/null
-						# AppImplementing Section: secret load
+						# AppImplementing Section: secret load post
 						#------------------------------------------------------------------------------
 						source $(dirname $0)/zss0.impl state-secret-load-post
 						#------------------------------------------------------------------------------
@@ -244,6 +243,7 @@ case $1 in
 					#------------------------------------------------------------------------------
 					source ./zss0.impl state-data-load
 					#------------------------------------------------------------------------------
+					echo ${STATENAME} > ${CONFIG}/base_data
 				fi
 				;;
 			"list"|*)

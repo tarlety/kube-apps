@@ -21,6 +21,7 @@ data:
   DB_HOST: "postgres:5432"
   DB_NAME: "gitea"
   DB_USER: "gitea"
+  DISABLE_REGISTRATION: "true"
 ---
 apiVersion: v1
 kind: ConfigMap

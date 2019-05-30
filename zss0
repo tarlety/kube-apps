@@ -6,7 +6,7 @@
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.5.8
+# Zerus Scripting Standard v0.5.9
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -71,7 +71,7 @@
 #==============================================================================
 # Environments:
 
-ZSSVERSION=0.5.8
+ZSSVERSION=0.5.9
 # AppImplementing Section: app
 #------------------------------------------------------------------------------
 source ./zss0.impl app
@@ -179,13 +179,13 @@ case $1 in
 	"secret-create")
 		shift
 		mkdir -p ${SECRET}
-		chmod -R go-rwx ${SECRET}
 
 		# AppImplementing Section: secret-create
 		#------------------------------------------------------------------------------
 		source ./zss0.impl secret-create $*
 		#------------------------------------------------------------------------------
 
+		chmod -R go-rwx ${SECRET}
 		gpg --gen-random --armor 2 16 | base64 | cut -c1-16 > ${SALT}
 		;;
 	"state")

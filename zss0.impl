@@ -6,7 +6,7 @@ case $1 in
 	"app")
 		PROJECTNAME=zerus
 		APPNAME=kube-apps-platform
-		APPVERSION=0.1.1
+		APPVERSION=0.1.2
 		;;
 	"config")
 		CONFIGKEYS="domain subject hostctrl storagectrl"
@@ -122,6 +122,7 @@ case $1 in
 					;;
 				"preflight")
 					source admin/11-secrets.sh ${APPNAME}
+					source admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
 					source admin/16-ing.sh ${APPNAME}
 					source admin/18-pvc.sh ${APPNAME}
 					;;

@@ -6,7 +6,7 @@ case $1 in
 	"app")
 		PROJECTNAME=zerus
 		APPNAME=kube-apps-platform
-		APPVERSION=0.1.0
+		APPVERSION=0.1.1
 		;;
 	"config")
 		CONFIGKEYS="domain subject hostctrl storagectrl"
@@ -44,7 +44,7 @@ case $1 in
 		gpg -ear ${GPGKEY} -o ${REQ}.enc ${REQ}
 		gpg -ear ${GPGKEY} -o ${CRT}.enc ${CRT}
 
-		rm ${KEY} ${REQ} ${CRT} ${EXTFILE}
+		rm ${KEY} ${REQ} ${CRT}
 		;;
 	"state-data-save")
 		echo "DATA state not support."
@@ -118,25 +118,25 @@ case $1 in
 			APPNAME=$1
 			case $2 in
 				"init")
-					admin/00-namespace.sh ${APPNAME} on
+					source admin/00-namespace.sh ${APPNAME} on
 					;;
 				"preflight")
-					admin/11-secrets.sh ${APPNAME}
-					admin/16-ing.sh ${APPNAME}
-					admin/18-pvc.sh ${APPNAME}
+					source admin/11-secrets.sh ${APPNAME}
+					source admin/16-ing.sh ${APPNAME}
+					source admin/18-pvc.sh ${APPNAME}
 					;;
 				"clean")
-					admin/00-namespace.sh ${APPNAME} off
+					source admin/00-namespace.sh ${APPNAME} off
 					;;
 				"on")
-					app/${APPNAME}/10-configmap.sh on
-					app/${APPNAME}/20-deploy.sh on
-					app/${APPNAME}/40-svc.sh on
+					source app/${APPNAME}/10-configmap.sh on
+					source app/${APPNAME}/20-deploy.sh on
+					source app/${APPNAME}/40-svc.sh on
 					;;
 				"off")
-					app/${APPNAME}/10-configmap.sh off
-					app/${APPNAME}/20-deploy.sh off
-					app/${APPNAME}/40-svc.sh off
+					source app/${APPNAME}/10-configmap.sh off
+					source app/${APPNAME}/20-deploy.sh off
+					source app/${APPNAME}/40-svc.sh off
 					;;
 				"print")
 					kubectl get all -n app-${APPNAME}

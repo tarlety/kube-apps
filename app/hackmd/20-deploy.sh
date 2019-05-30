@@ -45,6 +45,10 @@ spec:
               value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
             - name: HMD_DB_URL
               value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
+            - name: CMD_ALLOW_EMAIL_REGISTER
+              value: "false"
+            - name: CMD_ALLOW_ANONYMOUS
+              value: "false"
           ports:
             - name: web
               containerPort: 3000

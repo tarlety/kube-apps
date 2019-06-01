@@ -6,7 +6,7 @@
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.5.12
+# Zerus Scripting Standard v0.5.13
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -60,7 +60,7 @@
 #
 # Changelog:
 #
-#    v0.5.12:
+#    v0.5.13:
 #       - latest version checking
 #       - new command 'update' to fetch latest version
 #
@@ -75,7 +75,7 @@
 #==============================================================================
 # Auto Update:
 
-ZSSVERSION=0.5.12
+ZSSVERSION=0.5.13
 REMOTE_RELEASE=https://raw.githubusercontent.com/tarlety/kube-apps-platform/master/zss0
 diff <(curl https://raw.githubusercontent.com/tarlety/kube-apps-platform/master/zss0 2>/dev/null) zss0 2>/dev/null 1>/dev/null || echo \
 "*************************************************************************
@@ -130,8 +130,7 @@ case $1 in
 		echo ${ZSSVERSION} ${APPVERSION}
 		;;
 	"update")
-		wget ${REMOTE_RELEASE} -O $0
-		chmod +x $0
+		(wget ${REMOTE_RELEASE} -O $0 && chmod +x $0)&
 		;;
 	"env")
 		echo =========================================================================

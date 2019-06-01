@@ -51,6 +51,8 @@ spec:
               value: "false"
             - name: CMD_ALLOW_ANONYMOUS
               value: "false"
+            - name: CMD_DEFAULT_PERMISSION
+              value: "private"
           ports:
             - name: web
               containerPort: 3000

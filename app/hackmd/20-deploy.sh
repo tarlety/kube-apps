@@ -1,5 +1,7 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-hackmd}
+
 HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.3.1}
 #POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
 # The reason keeping postgres 9.6:
@@ -10,13 +12,13 @@ POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_export
 
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hackmd
-  namespace: app-hackmd
+  namespace: app-${APPNAME}
 spec:
   selector:
     matchLabels:
@@ -71,7 +73,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: app-hackmd
+  namespace: app-${APPNAME}
   labels:
     app: postgres
 spec:
@@ -130,11 +132,11 @@ spec:
           claimName: normal
 EOF
 	;;
-	"off")
-		kubectl delete -n app-hackmd deploy hackmd
-		kubectl delete -n app-hackmd deploy postgres
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy hackmd
+	kubectl delete -n app-${APPNAME} deploy postgres
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

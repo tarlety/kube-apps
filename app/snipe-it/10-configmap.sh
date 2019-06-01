@@ -1,16 +1,17 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-snipe-it}
 DOMAIN=${DOMAIN:-minikube}
 
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: env
-  namespace: app-snipe-it
+  namespace: app-${APPNAME}
 data:
   APP_ENV: "production"
   APP_DEBUG: "false"
@@ -32,10 +33,10 @@ data:
   MAIL_REPLYTO_NAME: "Snipe-IT"
 EOF
 	;;
-	"off")
-		kubectl delete -n app-snipe-it configmap env
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} configmap env
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

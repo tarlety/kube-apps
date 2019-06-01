@@ -1,16 +1,20 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-drone}
+
 DRONE_VERSION=${DRONE_VERSION:-drone/drone:1.1.0}
 
 ACTION=$1
 case $ACTION in
-	"on")
-		cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: drone
-  namespace: app-drone
+  namespace: app-${APPNAME}
+  labels:
+    security: cicd-pipeline
 spec:
   selector:
     matchLabels:
@@ -45,11 +49,11 @@ spec:
         persistentVolumeClaim:
           claimName: cold
 EOF
-		;;
-	"off")
-		kubectl delete -n app-drone deploy drone
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+	;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy drone
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

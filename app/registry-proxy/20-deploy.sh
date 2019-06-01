@@ -1,5 +1,7 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-registry-proxy}
+
 REGISTRY_VERSION=${REGISTRY_VERSION:-registry:2}
 
 ACTION=$1
@@ -10,7 +12,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: registry-proxy
-  namespace: app-registry-proxy
+  namespace: app-${APPNAME}
 spec:
   selector:
     matchLabels:
@@ -51,11 +53,11 @@ spec:
         configMap:
           name: registry-proxy-conf
 EOF
-		;;
-	"off")
-		kubectl delete -n app-registry-proxy deploy registry-proxy
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+	;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy registry-proxy
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

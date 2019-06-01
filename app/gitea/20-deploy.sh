@@ -1,18 +1,20 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-gitea}
+
 GITEA_VERSION=${GITEA_VERSION:-gitea/gitea:1.8.0}
 POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
 POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.4.7}
 
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gitea
-  namespace: app-gitea
+  namespace: app-${APPNAME}
 spec:
   selector:
     matchLabels:
@@ -69,7 +71,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: app-gitea
+  namespace: app-${APPNAME}
   labels:
     app: postgres
 spec:
@@ -133,11 +135,11 @@ spec:
           claimName: cold
 EOF
 	;;
-	"off")
-		kubectl delete -n app-gitea deploy gitea
-		kubectl delete -n app-gitea deploy postgres
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy gitea
+	kubectl delete -n app-${APPNAME} deploy postgres
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

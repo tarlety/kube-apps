@@ -1,17 +1,19 @@
 #!/bin/bash
 
+APNAME=${APPNAME:-snipe-it}
+
 SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v4.6.6}
 MYSQL_VERSION=${MYSQL_VERSION:-mysql:5.7.24}
 
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: snipe-it
-  namespace: app-snipe-it
+  namespace: app-${APPNAME}
 spec:
   selector:
     matchLabels:
@@ -63,7 +65,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: app-snipe-it
+  namespace: app-${APPNAME}
   labels:
     app: mysql
 spec:
@@ -104,11 +106,11 @@ spec:
         emptyDir: {}
 EOF
 	;;
-	"off")
-		kubectl delete -n app-snipe-it deploy snipe-it
-		kubectl delete -n app-snipe-it deploy mysql
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy snipe-it
+	kubectl delete -n app-${APPNAME} deploy mysql
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

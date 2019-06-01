@@ -1,14 +1,16 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-owncloud}
+
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: Service
 metadata:
   name: web
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
 spec:
   ports:
     - name: web
@@ -21,7 +23,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
 spec:
   ports:
     - name: redis
@@ -34,7 +36,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mariadb
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
 spec:
   ports:
     - name: mysql
@@ -44,12 +46,12 @@ spec:
     app: mariadb
 EOF
 	;;
-	"off")
-		kubectl delete -n app-owncloud svc web
-		kubectl delete -n app-owncloud svc redis
-		kubectl delete -n app-owncloud svc mariadb
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} svc web
+	kubectl delete -n app-${APPNAME} svc redis
+	kubectl delete -n app-${APPNAME} svc mariadb
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

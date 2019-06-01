@@ -1,5 +1,7 @@
 #!/bin/bash
 
+APPNAME=${APPNAME:-owncloud}
+
 OWNCLOUD_VERSION=${OWNCLOUD_VERSION:-owncloud/server:10.0.10}
 REDIS_VERSION=${REDIS_VERSION:-redis:5.0.3}
 MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.3.11}
@@ -7,13 +9,13 @@ MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.11.
 
 ACTION=$1
 case $ACTION in
-	"on")
-cat <<EOF | kubectl create -f -
+"on")
+	cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: owncloud
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
   labels:
     app: owncloud
 spec:
@@ -69,7 +71,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
   labels:
     app: redis
 spec:
@@ -111,7 +113,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb
-  namespace: app-owncloud
+  namespace: app-${APPNAME}
   labels:
     app: mariadb
 spec:
@@ -175,12 +177,12 @@ spec:
           claimName: cold
 EOF
 	;;
-	"off")
-		kubectl delete -n app-owncloud deploy owncloud
-		kubectl delete -n app-owncloud deploy redis
-		kubectl delete -n app-owncloud deploy mariadb
-		;;
-	*)
-		echo $(basename $0) on/off
-		;;
+"off")
+	kubectl delete -n app-${APPNAME} deploy owncloud
+	kubectl delete -n app-${APPNAME} deploy redis
+	kubectl delete -n app-${APPNAME} deploy mariadb
+	;;
+*)
+	echo $(basename $0) on/off
+	;;
 esac

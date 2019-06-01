@@ -130,14 +130,16 @@ case $1 in
 					source admin/00-namespace.sh ${APPNAME} off
 					;;
 				"on")
-					source app/${APPNAME}/10-configmap.sh on
-					source app/${APPNAME}/20-deploy.sh on
-					source app/${APPNAME}/40-svc.sh on
+					for script in app/${APPNAME}/*
+					do
+						source ${script} on
+					done
 					;;
 				"off")
-					source app/${APPNAME}/10-configmap.sh off
-					source app/${APPNAME}/20-deploy.sh off
-					source app/${APPNAME}/40-svc.sh off
+					for script in app/${APPNAME}/*
+					do
+						source ${script} off
+					done
 					;;
 				"print")
 					kubectl get all -n app-${APPNAME}

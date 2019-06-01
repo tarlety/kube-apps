@@ -6,7 +6,7 @@
 #==============================================================================
 # Copyright (c) 2019, tarlety@gmail.com
 #
-# Zerus Scripting Standard v0.5.9
+# Zerus Scripting Standard v0.5.10
 #
 # This standard defines script state management framework.
 # Following this framework, you can manage app states in a consistent way.
@@ -60,6 +60,10 @@
 #
 # Changelog:
 #
+#    v0.5.10:
+#       - version checking
+#       - update command to fetch latest ZSS
+#
 #    v0.5.3:
 #       - introducing zss0.impl
 #
@@ -69,9 +73,19 @@
 #       - certificate as secret files shall be encrypted
 
 #==============================================================================
+# Auto Update:
+
+ZSSVERSION=0.5.10
+REMOTE_RELEASE=https://raw.githubusercontent.com/tarlety/kube-apps-platform/master/zss0
+REMOTE_VERSION=$(wget ${REMOTE_RELEASE} -O /dev/stdout 2>&1 | grep '^ZSSVERSION' | cut -d= -f2)
+[[ ${ZSSVERSION} != ${REMOTE_VERSION} ]] && echo \
+"*************************************************************************
+Newer ZSS Version Available. Type '$0 update' to get the latest ZSS.
+*************************************************************************"
+
+#==============================================================================
 # Environments:
 
-ZSSVERSION=0.5.9
 # AppImplementing Section: app
 #------------------------------------------------------------------------------
 source ./zss0.impl app
@@ -115,6 +129,9 @@ source ./zss0.impl vars
 case $1 in
 	"version")
 		echo ${ZSSVERSION} ${APPVERSION}
+		;;
+	"update")
+		wget ${REMOTE_RELEASE}
 		;;
 	"env")
 		echo =========================================================================
@@ -278,6 +295,7 @@ case $1 in
 		;;
 	"")
 		echo $(basename $0) version
+		echo $(basename $0) update
 		echo $(basename $0) env
 		echo $(basename $0) config ...
 		echo $(basename $0) secret-create

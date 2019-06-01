@@ -130,13 +130,13 @@ case $1 in
 					source admin/00-namespace.sh ${APPNAME} off
 					;;
 				"on")
-					for script in app/${APPNAME}/*
+					for script in app/${APPNAME}/*.sh
 					do
 						source ${script} on
 					done
 					;;
 				"off")
-					for script in app/${APPNAME}/*
+					for script in app/${APPNAME}/*.sh
 					do
 						source ${script} off
 					done

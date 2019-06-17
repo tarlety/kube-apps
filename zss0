@@ -139,7 +139,19 @@ case $1 in
 		shift
 		KEY=$1
 		if [ ! -z "${KEY}" ]; then
-			eval echo \${${KEY}}
+			if [ "$(eval echo \${!${KEY}[@]})" == "0" ]; then
+				eval echo \${${KEY}}
+			else
+				echo -n '('
+				eval HASHKEYS=\${!${KEY}[@]}
+				for HASHKEY in ${HASHKEYS}
+				do
+					echo -n '["'${HASHKEY}'"]="'
+					eval echo -n \"\${${KEY}[${HASHKEY}]}\"
+					echo -n '" '
+				done
+				echo ')'
+			fi
 		else
 			echo =========================================================================
 			echo "## NAME: ${PROJECTNAME}/${APPNAME}"

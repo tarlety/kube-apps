@@ -139,11 +139,7 @@ case $1 in
 		shift
 		KEY=$1
 		if [ ! -z "${KEY}" ]; then
-			if [ "$(eval echo \${!${KEY}[@]})" == "0" ]; then
-				eval echo \${${KEY}}
-			else
-				eval echo "{\${!${KEY}[@]}} -\> {\${${KEY}[@]}}"
-			fi
+			eval echo \${${KEY}}
 		else
 			echo =========================================================================
 			echo "## NAME: ${PROJECTNAME}/${APPNAME}"

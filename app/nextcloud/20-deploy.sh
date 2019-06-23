@@ -3,6 +3,7 @@
 APPNAME=${APPNAME:-nextcloud}
 
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.1}
+REDIS_VERSION=${REDIS_VERSION:-redis:5.0.5}
 MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.3.15}
 MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.11.0}
 
@@ -40,7 +41,7 @@ spec:
                 secretKeyRef:
                   name: passwords
                   key: admin-password
-            - name: NEXTCLOUD_DB_PASSWORD
+            - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: passwords
@@ -65,6 +66,48 @@ spec:
             - mountPath: /var/www/html/themes
               name: data
               subPath: themes
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: normal
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: app-${APPNAME}
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: ${REDIS_VERSION}
+          name: redis
+          imagePullPolicy: IfNotPresent
+          args: ["--requirepass", "\$(REDIS_PASSWORD)"]
+          env:
+            - name: REDIS_DATABASES
+              value: "1"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: rest-password
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/redis
+              name: data
+              subPath: redis
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -140,6 +183,7 @@ EOF
 	;;
 "off")
 	kubectl delete -n app-${APPNAME} deploy nextcloud
+	kubectl delete -n app-${APPNAME} deploy redis
 	kubectl delete -n app-${APPNAME} deploy mariadb
 	;;
 *)

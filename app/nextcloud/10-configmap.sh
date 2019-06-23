@@ -1,6 +1,7 @@
 #!/bin/bash
 
 APPNAME=${APPNAME:-nextcloud}
+DOMAIN=${DOMAIN:-minikube}
 
 ACTION=$1
 case $ACTION in
@@ -13,10 +14,12 @@ metadata:
   namespace: app-${APPNAME}
 data:
   NEXTCLOUD_ADMIN_USER: "admin"
+  REDIS_HOST: "redis"
   MYSQL_HOST: "mariadb"
   MYSQL_DATABASE: "nextcloud"
   MYSQL_USER: "nextcloud"
   NEXTCLOUD_DATA_DIR: "/var/www/html/data"
+  NEXTCLOUD_TRUSTED_DOMAINS: "${APPNAME}.${DOMAIN}"
 ---
 apiVersion: v1
 kind: ConfigMap

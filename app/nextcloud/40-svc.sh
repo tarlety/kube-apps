@@ -22,6 +22,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: redis
+  namespace: app-${APPNAME}
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+  selector:
+    app: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: mariadb
   namespace: app-${APPNAME}
 spec:
@@ -35,6 +48,7 @@ EOF
 	;;
 "off")
 	kubectl delete -n app-${APPNAME} svc web
+	kubectl delete -n app-${APPNAME} svc redis
 	kubectl delete -n app-${APPNAME} svc mariadb
 	;;
 *)

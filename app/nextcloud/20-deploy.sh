@@ -91,7 +91,6 @@ spec:
         - image: ${REDIS_VERSION}
           name: redis
           imagePullPolicy: IfNotPresent
-          args: ["--requirepass", "\$(REDIS_PASSWORD)"]
           env:
             - name: REDIS_DATABASES
               value: "1"

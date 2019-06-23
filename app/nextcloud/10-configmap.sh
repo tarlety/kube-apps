@@ -29,6 +29,10 @@ metadata:
 data:
   MYSQL_DATABASE: "nextcloud"
   MYSQL_USER: "nextcloud"
+  MARIADB_MASTER_HOST: "mariadb"
+  MARIADB_MASTER_PORT_NUMBER: "3306"
+  MARIADB_MASTER_ROOT_USER: "root"
+  MARIADB_REPLICATION_USER: "replicator"
 EOF
 	;;
 "off")

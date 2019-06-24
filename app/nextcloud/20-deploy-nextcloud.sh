@@ -60,6 +60,9 @@ spec:
             - mountPath: /var/www/html/themes
               name: data
               subPath: themes
+            - mountPath: /var/www/html/
+              name: data
+              subPath: root
       volumes:
       - name: data
         persistentVolumeClaim:

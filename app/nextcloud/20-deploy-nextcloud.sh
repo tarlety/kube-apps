@@ -16,7 +16,7 @@ metadata:
   labels:
     app: nextcloud
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nextcloud
@@ -51,9 +51,6 @@ spec:
             - mountPath: /var/www/html/data
               name: data
               subPath: data
-            - mountPath: /var/www/html
-              name: data
-              subPath: root
             - mountPath: /var/www/html/config
               name: data
               subPath: config

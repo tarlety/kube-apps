@@ -48,21 +48,9 @@ spec:
               containerPort: 80
               protocol: TCP
           volumeMounts:
-            - mountPath: /var/www/html/data
+            - mountPath: /var/www/html
               name: data
-              subPath: data
-            - mountPath: /var/www/html/config
-              name: data
-              subPath: config
-            - mountPath: /var/www/html/custom_apps
-              name: data
-              subPath: custom_apps
-            - mountPath: /var/www/html/themes
-              name: data
-              subPath: themes
-            - mountPath: /var/www/html/
-              name: data
-              subPath: root
+              subPath: html
       volumes:
       - name: data
         persistentVolumeClaim:

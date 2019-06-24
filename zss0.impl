@@ -36,7 +36,7 @@ case $1 in
 	"secret-create")
 		rm -f ${KEY}.enc ${REQ}.enc ${CRT}.enc
 
-		$(dirname $0)/templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
+		[ -f ${EXTFILE} ] || $(dirname $0)/templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
 		openssl genrsa -out ${KEY}
 		openssl req -sha512 -new -key ${KEY} -out ${REQ} -subj ${SUBJECT}
 		openssl x509 -sha512 -req -days 365 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}

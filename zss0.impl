@@ -132,13 +132,13 @@ case $1 in
 				"on")
 					for script in app/${APPNAME}/*.sh
 					do
-						source ${script} on
+						${script} on
 					done
 					;;
 				"off")
 					for script in app/${APPNAME}/*.sh
 					do
-						source ${script} off
+						${script} off
 					done
 					;;
 				"print")

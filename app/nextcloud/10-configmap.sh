@@ -27,8 +27,8 @@ metadata:
   name: mysql-env
   namespace: app-${APPNAME}
 data:
-  MARIADB_DATABASE: "nextcloud"
-  MARIADB_USER: "nextcloud"
+  MYSQL_DATABASE: "nextcloud"
+  MYSQL_USER: "nextcloud"
 EOF
 	;;
 "off")

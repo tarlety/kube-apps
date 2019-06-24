@@ -2,8 +2,8 @@
 
 APPNAME=${APPNAME:-nextcloud}
 
-#MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.3.16}
-MARIADB_VERSION=${MARIADB_VERSION:-bitnami/mariadb:10.3.16}
+MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.3.16}
+#MARIADB_VERSION=${MARIADB_VERSION:-bitnami/mariadb:10.3.16}
 MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.11.0}
 
 ACTION=$1
@@ -31,16 +31,17 @@ spec:
         - image: ${MARIADB_VERSION}
           name: mariadb
           imagePullPolicy: IfNotPresent
+          args: ["--innodb-buffer-pool-size=1G", "--innodb_io_capacity=4000"]
           envFrom:
             - configMapRef:
                 name: mysql-env
           env:
-            - name: MARIADB_ROOT_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: passwords
                   key: admin-password
-            - name: MARIADB_PASSWORD
+            - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: passwords
@@ -50,12 +51,11 @@ spec:
               containerPort: 3306
               protocol: TCP
           volumeMounts:
-            - mountPath: /bitnami/mariadb
+            - mountPath: /var/lib/mysql
               name: data
-              subPath: mariadb
-            - mountPath: /opt/backup
+              subPath: mysql
+            - mountPath: /var/lib/backup
               name: backup
-              subPath: mysql-master
         - image: ${MARIADB_EXPORTER_VERSION}
           name: exporter
           imagePullPolicy: IfNotPresent

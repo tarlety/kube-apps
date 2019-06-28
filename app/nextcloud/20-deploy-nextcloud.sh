@@ -2,7 +2,8 @@
 
 APPNAME=${APPNAME:-nextcloud}
 
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.1}
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.1-fpm}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.0}
 
 ACTION=$1
 case $ACTION in
@@ -44,6 +45,17 @@ spec:
                   name: passwords
                   key: user-password
           ports:
+            - name: nextcloud
+              containerPort: 9000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: data
+              subPath: html
+        - image: ${NGINX_VERSION}
+          name: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
             - name: web
               containerPort: 80
               protocol: TCP
@@ -51,10 +63,16 @@ spec:
             - mountPath: /var/www/html
               name: data
               subPath: html
+            - mountPath: /etc/nginx
+              name: nginx-conf
+              readOnly: true
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: normal
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
 EOF
 	;;
 "off")

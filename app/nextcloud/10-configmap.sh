@@ -144,6 +144,7 @@ data:
             fastcgi_pass php-handler;
             fastcgi_intercept_errors on;
             fastcgi_request_buffering off;
+            fastcgi_read_timeout 3600;
         }
 
         location ~ ^\\/(?:updater|oc[ms]-provider)(?:$|\\/) {

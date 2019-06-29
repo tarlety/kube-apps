@@ -63,7 +63,7 @@ spec:
             - mountPath: /var/www/html
               name: data
               subPath: html
-            - mountPath: /etc/nginx
+            - mountPath: /etc/nginx/conf.d
               name: nginx-conf
               readOnly: true
       volumes:

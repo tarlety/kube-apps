@@ -37,15 +37,6 @@ metadata:
   namespace: app-${APPNAME}
 data:
   nginx.conf: |
-    user www-data;
-    worker_processes auto;
-    pid /var/run/nginx.pid;
-    events {
-        worker_connections 1024;
-        multi_accept on;
-        use epoll;
-    }
-
     upstream php-handler {
         server 127.0.0.1:9000;
         #server unix:/var/run/php/php7.0-fpm.sock;
@@ -106,10 +97,10 @@ data:
         # rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
 
         location = /.well-known/carddav {
-          return 301 $scheme://$host/remote.php/dav;
+          return 301 \$scheme://\$host/remote.php/dav;
         }
         location = /.well-known/caldav {
-          return 301 $scheme://$host/remote.php/dav;
+          return 301 \$scheme://\$host/remote.php/dav;
         }
 
         # set max upload size
@@ -129,21 +120,21 @@ data:
         #pagespeed off;
 
         location / {
-            rewrite ^ /index.php$request_uri;
+            rewrite ^ /index.php\$request_uri;
         }
 
-        location ~ ^\/(?:build|tests|config|lib|3rdparty|templates|data)\/ {
+        location ~ ^\\/(?:build|tests|config|lib|3rdparty|templates|data)\\/ {
             deny all;
         }
-        location ~ ^\/(?:\.|autotest|occ|issue|indie|db_|console) {
+        location ~ ^\\/(?:\\.|autotest|occ|issue|indie|db_|console) {
             deny all;
         }
 
-        location ~ ^\/(?:index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+)\.php(?:$|\/) {
-            fastcgi_split_path_info ^(.+?\.php)(\/.*|)$;
+        location ~ ^\\/(?:index|remote|public|cron|core\\/ajax\\/update|status|ocs\\/v[12]|updater\\/.+|oc[ms]-provider\\/.+)\\.php(?:$|\\/) {
+            fastcgi_split_path_info ^(.+?\\.php)(\\/.*|)$;
             include fastcgi_params;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+            fastcgi_param PATH_INFO \$fastcgi_path_info;
             fastcgi_param HTTPS on;
             #Avoid sending the security headers twice
             fastcgi_param modHeadersAvailable true;
@@ -153,15 +144,15 @@ data:
             fastcgi_request_buffering off;
         }
 
-        location ~ ^\/(?:updater|oc[ms]-provider)(?:$|\/) {
-            try_files $uri/ =404;
+        location ~ ^\\/(?:updater|oc[ms]-provider)(?:$|\\/) {
+            try_files \$uri/ =404;
             index index.php;
         }
 
         # Adding the cache control header for js, css and map files
         # Make sure it is BELOW the PHP block
-        location ~ \.(?:css|js|woff2?|svg|gif|map)$ {
-            try_files $uri /index.php$request_uri;
+        location ~ \\.(?:css|js|woff2?|svg|gif|map)$ {
+            try_files \$uri /index.php\$request_uri;
             add_header Cache-Control "public, max-age=15778463";
             # Add headers to serve security related headers (It is intended to
             # have those duplicated to the ones above)
@@ -185,8 +176,8 @@ data:
             access_log off;
         }
 
-        location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ {
-            try_files $uri /index.php$request_uri;
+        location ~ \\.(?:png|html|ttf|ico|jpg|jpeg)$ {
+            try_files \$uri /index.php\$request_uri;
             # Optional: Don't log access to other assets
             access_log off;
         }

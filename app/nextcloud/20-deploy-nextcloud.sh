@@ -52,6 +52,10 @@ spec:
             - mountPath: /var/www/html
               name: data
               subPath: html
+            - mountPath: /var/www/html/.user.ini
+              name: userini-conf
+              subPath: .user.ini
+              readOnly: true
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent
@@ -73,6 +77,9 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
+      - name: userini-conf
+        configMap:
+          name: userini-conf
 EOF
 	;;
 "off")

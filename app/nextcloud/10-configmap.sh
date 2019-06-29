@@ -29,7 +29,9 @@ metadata:
 data:
   MYSQL_DATABASE: "nextcloud"
   MYSQL_USER: "nextcloud"
----
+EOF
+
+	cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -183,9 +185,29 @@ data:
         }
     }
 EOF
+
+	cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: userini-conf
+  namespace: app-${APPNAME}
+data:
+  .user.ini: |
+    mbstring.func_overload=0
+    always_populate_raw_post_data=-1
+    default_charset='UTF-8'
+    output_buffering=0
+    zend_extension=opcache.so
+    opcache.enable=1
+    opcache.enable_cli=1
+    opcache.huge_code_pages=1
+    opcache.file_cache=/tmp
+EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} configmap nextcloud-env mysql-env nginx-conf
+	kubectl delete -n app-${APPNAME} configmap nextcloud-env mysql-env
+	kubectl delete -n app-${APPNAME} configmap nginx-conf userini-conf
 	;;
 *)
 	echo $(basename $0) on/off

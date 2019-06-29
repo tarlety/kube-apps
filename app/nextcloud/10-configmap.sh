@@ -45,7 +45,7 @@ data:
     server {
         listen 80;
         listen [::]:80;
-        server_name nextcloud.minikube;
+        server_name ${APPNAME}.${DOMAIN};
         # enforce https
         #return 301 https://$server_name$request_uri;
         #listen 443 ssl http2;

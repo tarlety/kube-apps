@@ -132,7 +132,7 @@ case $1 in
 				"on")
 					for script in app/${APPNAME}/*.sh
 					do
-						${script} on
+						DOMAIN=${DOMAIN} APPNAME=${APPNAME} ${script} on
 					done
 					;;
 				"off")

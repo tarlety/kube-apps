@@ -52,17 +52,29 @@ spec:
             - mountPath: /var/www/html
               name: data
               subPath: html
-            - mountPath: /var/www/html/.user.ini
-              name: userini-conf
-              subPath: .user.ini
-              readOnly: true
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "echo '
+mbstring.func_overload=0\n
+always_populate_raw_post_data=-1\n
+default_charset='UTF-8'\n
+output_buffering=0\n
+zend_extension=opcache.so\n
+opcache.enable=1\n
+opcache.enable_cli=1\n
+opcache.interned_strings_buffer=8\n
+opcache.max_accelerated_files=10000\n
+opcache.memory_consumption=128\n
+opcache.save_comments=1\n
+opcache.revalidate_freq=1\n
+opcache.huge_code_pages=1\n
+opcache.file_cache=/tmp\n
+' > /var/www/html/.user.ini"]
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: normal
-      - name: userini-conf
-        configMap:
-          name: userini-conf
 ---
 apiVersion: apps/v1
 kind: Deployment

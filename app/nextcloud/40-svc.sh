@@ -17,6 +17,19 @@ spec:
       port: 80
       protocol: TCP
   selector:
+    app: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+  namespace: app-${APPNAME}
+spec:
+  ports:
+    - name: nextcloud
+      port: 9000
+      protocol: TCP
+  selector:
     app: nextcloud
 ---
 apiVersion: v1
@@ -48,6 +61,7 @@ EOF
 	;;
 "off")
 	kubectl delete -n app-${APPNAME} svc web
+	kubectl delete -n app-${APPNAME} svc nextcloud
 	kubectl delete -n app-${APPNAME} svc redis
 	kubectl delete -n app-${APPNAME} svc mariadb
 	;;

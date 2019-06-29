@@ -56,6 +56,32 @@ spec:
               name: userini-conf
               subPath: .user.ini
               readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: normal
+      - name: userini-conf
+        configMap:
+          name: userini-conf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: app-${APPNAME}
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent
@@ -77,13 +103,10 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
-      - name: userini-conf
-        configMap:
-          name: userini-conf
 EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy nextcloud
+	kubectl delete -n app-${APPNAME} deploy nextcloud nginx
 	;;
 *)
 	echo $(basename $0) on/off

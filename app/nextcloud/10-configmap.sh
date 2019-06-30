@@ -19,7 +19,7 @@ data:
   MYSQL_DATABASE: "nextcloud"
   MYSQL_USER: "nextcloud"
   NEXTCLOUD_DATA_DIR: "/var/www/html/data"
-  NEXTCLOUD_TRUSTED_DOMAINS: "${APPNAME}.${DOMAIN}"
+  NEXTCLOUD_TRUSTED_DOMAINS: "${APPNAME}.${DOMAIN} web"
 ---
 apiVersion: v1
 kind: ConfigMap

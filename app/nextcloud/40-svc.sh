@@ -56,7 +56,8 @@ spec:
       port: 3306
       protocol: TCP
   selector:
-    app: mariadb-master
+    app: mariadb
+    replication: master
 EOF
 	;;
 "off")

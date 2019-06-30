@@ -16,16 +16,19 @@ metadata:
   name: mariadb-master
   namespace: app-${APPNAME}
   labels:
-    app: mariadb-master
+    app: mariadb
+    replication: master
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mariadb-master
+      app: mariadb
+      replication: master
   template:
     metadata:
       labels:
-        app: mariadb-master
+        app: mariadb
+        replication: master
     spec:
       containers:
         - image: ${MARIADB_VERSION}

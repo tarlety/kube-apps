@@ -4,30 +4,30 @@
 
 case $1 in
 	"app")
-		export PROJECTNAME=zerus
-		export APPNAME=kube-apps-platform
-		export APPVERSION=0.1.3
+		PROJECTNAME=zerus
+		APPNAME=kube-apps-platform
+		APPVERSION=0.1.2
 		;;
 	"config")
-		export CONFIGKEYS="domain subject hostctrl storagectrl"
+		CONFIGKEYS="domain subject hostctrl storagectrl"
 		declare -A CONFIG_DESCRIPTIONS
-		export CONFIG_DESCRIPTIONS=( \
+		CONFIG_DESCRIPTIONS=( \
 			["domain"]="the base domain name of the service." \
 			["subject"]="the certificate subject string." \
 			["hostctrl"]="the ctrl command to control host." \
 			["storagectrl"]="the storagectrl command to create pv." \
 			)
 
-		export DEFAULT_DOMAIN=minikube
-		export DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
-		export DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
-		export DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
+		DEFAULT_DOMAIN=minikube
+		DEFAULT_SUBJECT=/C=CN/ST=State/L=Location/O=Org/OU=Unit/CN=minikube
+		DEFAULT_HOSTCTRL='ssh -o "StrictHostKeyChecking no" -i `minikube ssh-key` docker@`minikube ip`'
+		DEFAULT_STORAGECTRL=${PWD}/store/hostpath.sh
 		;;
 	"vars")
-		export EXTFILE=${SECRET}/v3.ext
-		export KEY=${SECRET}/cert.key
-		export CRT=${SECRET}/cert.crt
-		export REQ=${SECRET}/cert.req
+		EXTFILE=${SECRET}/v3.ext
+		KEY=${SECRET}/cert.key
+		CRT=${SECRET}/cert.crt
+		REQ=${SECRET}/cert.req
 		;;
 	"requirement")
 		echo - kubectl: $(which kubectl)
@@ -47,10 +47,12 @@ case $1 in
 		rm ${KEY} ${REQ} ${CRT}
 		;;
 	"state-data-save")
+		echo "DATA state not support."
 		;;
 	"state-secret-load-post")
 		;;
 	"state-data-load")
+		echo "DATA state not support."
 		;;
 	# AppImplementing Section: commands
 	#------------------------------------------------------------------------------
@@ -116,16 +118,16 @@ case $1 in
 			APPNAME=$1
 			case $2 in
 				"init")
-					admin/00-namespace.sh ${APPNAME} on
+					source admin/00-namespace.sh ${APPNAME} on
 					;;
 				"preflight")
-					admin/11-secrets.sh ${APPNAME}
-					admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
-					admin/16-ing.sh ${APPNAME}
-					admin/18-pvc.sh ${APPNAME}
+					source admin/11-secrets.sh ${APPNAME}
+					source admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
+					source admin/16-ing.sh ${APPNAME}
+					source admin/18-pvc.sh ${APPNAME}
 					;;
 				"clean")
-					admin/00-namespace.sh ${APPNAME} off
+					source admin/00-namespace.sh ${APPNAME} off
 					;;
 				"on")
 					for script in app/${APPNAME}/*.sh

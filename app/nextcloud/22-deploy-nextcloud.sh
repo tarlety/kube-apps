@@ -132,6 +132,8 @@ metadata:
     app: cron
 spec:
   schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:

@@ -40,7 +40,7 @@ metadata:
 data:
   nginx.conf: |
     upstream php-handler {
-        server nextcloud:9000;
+        server localhost:9000;
         #server unix:/var/run/php/php7.0-fpm.sock;
     }
 

@@ -45,10 +45,6 @@ spec:
                 secretKeyRef:
                   name: passwords
                   key: user-password
-          ports:
-            - name: nextcloud
-              containerPort: 9000
-              protocol: TCP
           volumeMounts:
             - mountPath: /var/www/html
               name: data
@@ -78,29 +74,6 @@ spec:
                     opcache.huge_code_pages=1
                     opcache.file_cache=/tmp
                     ' > /var/www/html/.user.ini
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: normal
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: app-${APPNAME}
-  labels:
-    app: nginx
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent

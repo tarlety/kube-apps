@@ -130,7 +130,7 @@ spec:
 EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy nextcloud nginx
+	kubectl delete -n app-${APPNAME} deploy nextcloud
 	kubectl delete -n app-${APPNAME} cronjob cron
 	;;
 *)

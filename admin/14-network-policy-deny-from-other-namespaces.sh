@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# disable network policy for test
-echo "disable network policy"
-exit 0
-
 APPNAME=$1
 
 cat <<EOF | kubectl create -f -

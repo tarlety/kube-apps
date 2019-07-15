@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "DISABLE IT BEFORE HAS KNOWLEDGE TO TROUBLESHOOT NETWORKPOLICY ISSUE."
+exit 0
+
 APPNAME=$1
 
 cat <<EOF | kubectl create -f -

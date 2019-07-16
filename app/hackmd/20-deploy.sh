@@ -42,14 +42,7 @@ spec:
                 secretKeyRef:
                   name: passwords
                   key: user-password
-            - name: CMD_SESSION_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: rest-password
             - name: CMD_DB_URL
-              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
-            - name: HMD_DB_URL
               value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
             - name: CMD_ALLOW_EMAIL_REGISTER
               value: "false"
@@ -61,11 +54,6 @@ spec:
             - name: web
               containerPort: 3000
               protocol: TCP
-          livenessProbe:
-            initialDelaySeconds: 30
-            tcpSocket:
-              port: web
-            timeoutSeconds: 1
           volumeMounts:
             - mountPath: "/hackmd/public/uploads"
               name: data

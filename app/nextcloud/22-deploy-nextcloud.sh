@@ -16,6 +16,7 @@ metadata:
   name: nextcloud
   namespace: app-${APPNAME}
   labels:
+    type: app
     app: nextcloud
 spec:
   replicas: ${NEXTCLOUD_REPLICAS}
@@ -25,6 +26,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: nextcloud
     spec:
       containers:

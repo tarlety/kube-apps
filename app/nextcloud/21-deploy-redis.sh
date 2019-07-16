@@ -14,6 +14,7 @@ metadata:
   name: redis
   namespace: app-${APPNAME}
   labels:
+    type: app
     app: redis
 spec:
   selector:
@@ -22,6 +23,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: redis
     spec:
       containers:

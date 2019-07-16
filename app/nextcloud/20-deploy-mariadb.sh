@@ -16,6 +16,7 @@ metadata:
   name: mariadb-master
   namespace: app-${APPNAME}
   labels:
+    type: app
     app: mariadb
     replication: master
 spec:
@@ -27,6 +28,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: mariadb
         replication: master
     spec:

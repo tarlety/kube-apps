@@ -19,6 +19,9 @@ kind: Deployment
 metadata:
   name: hackmd
   namespace: app-${APPNAME}
+  labels:
+    type: app
+    app: hackmd
 spec:
   selector:
     matchLabels:
@@ -26,6 +29,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: hackmd
     spec:
       containers:
@@ -77,6 +81,7 @@ metadata:
   name: postgres
   namespace: app-${APPNAME}
   labels:
+    type: app
     app: postgres
 spec:
   selector:
@@ -85,6 +90,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: postgres
     spec:
       containers:

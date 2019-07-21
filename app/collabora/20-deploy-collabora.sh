@@ -21,7 +21,6 @@ metadata:
     type: app
     app: collabora
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: collabora
@@ -46,28 +45,12 @@ spec:
               value: "collabora.${DOMAIN}"
             - name: extra_params
               value: "--o:ssl.enable=false --o:ssl.termination=true"
-            - name: username
-              value: "admin"
-            - name: password
-              value: "admin"
-            - name: password1
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: admin-password
             - name: SLEEPFORDEBUGGER
               value: "0"
           ports:
             - name: web
               containerPort: 9980
               protocol: TCP
-          volumeMounts:
-            - mountPath: /etc/loolwsd
-              name: conf
-      volumes:
-      - name: conf
-        configMap:
-          name: conf
 EOF
 	;;
 "off")

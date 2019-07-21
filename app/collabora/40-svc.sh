@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPNAME=${APPNAME:-nextcloud}
+APPNAME=${APPNAME:-collabora}
 
 ACTION=$1
 case $ACTION in
@@ -14,10 +14,10 @@ metadata:
 spec:
   ports:
     - name: web
-      port: 80
+      port: 9980
       protocol: TCP
   selector:
-    app: collabora
+    app: ${APPNAME}
 EOF
 	;;
 "off")

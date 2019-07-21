@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/
-# https://www.collaboraoffice.com/code/docker/
+# - how to use it
+#  - https://www.collaboraoffice.com/code/quick-tryout-nextcloud-docker/
+#  - https://www.collaboraoffice.com/code/docker/
+# - admin page: https://collabora-online-domain/loleaflet/dist/admin/admin.html
+# - troubleshooting restaring issue: https://github.com/CollaboraOnline/Docker-CODE/issues/32
 APPNAME=${APPNAME:-collabora}
 COLLABORA_VERSION=${COLLABORA_VERSION:-collabora/code:4.0.5.2}
 
@@ -18,7 +21,7 @@ metadata:
     type: app
     app: collabora
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: collabora
@@ -33,12 +36,38 @@ spec:
           name: collabora
           imagePullPolicy: IfNotPresent
           env:
+            - name: DONT_GEN_SSL_CERT
+              value: "true"
+            - name: dictionaries
+              value: "en_US"
+            - name: domain
+              value: "nextcloud.${DOMAIN}"
+            - name: server_name
+              value: "collabora.${DOMAIN}"
             - name: extra_params
-              value: "--o:ssl.enable=false"
+              value: "--o:ssl.enable=false --o:ssl.termination=true"
+            - name: username
+              value: "admin"
+            - name: password
+              value: "admin"
+            - name: password1
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: admin-password
+            - name: SLEEPFORDEBUGGER
+              value: "0"
           ports:
-            - name: collabora
-              containerPort: 80
+            - name: web
+              containerPort: 9980
               protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/loolwsd
+              name: conf
+      volumes:
+      - name: conf
+        configMap:
+          name: conf
 EOF
 	;;
 "off")

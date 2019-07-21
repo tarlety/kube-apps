@@ -142,17 +142,25 @@ case $1 in
 					done
 					;;
 				"print")
+					echo ---------------------------------------------------------------------
+					echo \#\# Workloads
 					kubectl get all -n app-${APPNAME}
-					kubectl get pvc -n app-${APPNAME}
+					echo ---------------------------------------------------------------------
+					echo \#\# Ingress
+					kubectl get ing -n app-${APPNAME}
+					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Persistent Volume Claim
 					kubectl get pvc -n app-${APPNAME}
+					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Persistent Volume
 					kubectl get pv | grep "app-${APPNAME}"
+					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Configure Map
 					kubectl get configmap -n app-${APPNAME}
+					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Secrets
 					kubectl get secret -n app-${APPNAME}

@@ -106,7 +106,7 @@ data:
         }
 
         # set max upload size
-        client_max_body_size 512M;
+        client_max_body_size 51200M;
         fastcgi_buffers 64 4K;
 
         # Enable gzip but do not remove ETag headers
@@ -144,7 +144,7 @@ data:
             fastcgi_pass php-handler;
             fastcgi_intercept_errors on;
             fastcgi_request_buffering off;
-            fastcgi_read_timeout 3600;
+            fastcgi_read_timeout 36000;
         }
 
         location ~ ^\\/(?:updater|oc[ms]-provider)(?:$|\\/) {

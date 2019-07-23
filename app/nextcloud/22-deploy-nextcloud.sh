@@ -70,6 +70,9 @@ spec:
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
                     kill -USR2 1
                     echo '
+                    upload_max_filesize=49152M
+                    post_max_size=49152M
+                    memory_limit=32768M
                     mbstring.func_overload=0
                     always_populate_raw_post_data=-1
                     default_charset='UTF-8'
@@ -82,6 +85,11 @@ spec:
                     opcache.huge_code_pages=1
                     opcache.file_cache=/tmp
                     ' > /var/www/html/.user.ini
+          resources:
+            requests:
+              memory: "32Gi"
+            limits:
+              memory: "48Gi"
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent

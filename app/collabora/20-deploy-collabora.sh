@@ -47,6 +47,11 @@ spec:
               value: "--o:ssl.enable=false --o:ssl.termination=true"
             - name: SLEEPFORDEBUGGER
               value: "0"
+          resources:
+            requests:
+              memory: "32Gi"
+            limits:
+              memory: "48Gi"
           ports:
             - name: web
               containerPort: 9980

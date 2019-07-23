@@ -66,8 +66,8 @@ spec:
                   - |
                     sed -in -e 's/^pm.max_children = .*/pm.max_children = 300/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.start_servers = .*/pm.start_servers = 30/g' /usr/local/etc/php-fpm.d/www.conf
-                    sed -in -e 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 5/g' /usr/local/etc/php-fpm.d/www.conf
-                    sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
+                    sed -in -e 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
+                    sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
                     kill -USR2 1
                     echo '
                     upload_max_filesize=49152M

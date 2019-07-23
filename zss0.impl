@@ -144,26 +144,26 @@ case $1 in
 				"print")
 					echo ---------------------------------------------------------------------
 					echo \#\# Workloads
-					kubectl get all -n app-${APPNAME}
+					kubectl get all -n app-${APPNAME} -o wide
 					echo ---------------------------------------------------------------------
 					echo \#\# Ingress
-					kubectl get ing -n app-${APPNAME}
+					kubectl get ing -n app-${APPNAME} -o wide
 					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Persistent Volume Claim
-					kubectl get pvc -n app-${APPNAME}
+					kubectl get pvc -n app-${APPNAME} -o wide
 					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Persistent Volume
-					kubectl get pv | grep "app-${APPNAME}"
+					kubectl get pv -o wide | grep "app-${APPNAME}"
 					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Configure Map
-					kubectl get configmap -n app-${APPNAME}
+					kubectl get configmap -n app-${APPNAME} -o wide
 					echo
 					echo ---------------------------------------------------------------------
 					echo \#\# Secrets
-					kubectl get secret -n app-${APPNAME}
+					kubectl get secret -n app-${APPNAME} -o wide
 					;;
 			esac
 			;;

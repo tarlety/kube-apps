@@ -70,9 +70,9 @@ spec:
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
                     kill -USR2 1
                     echo '
-                    upload_max_filesize=49152M
-                    post_max_size=49152M
-                    memory_limit=32768M
+                    upload_max_filesize=100G
+                    post_max_size=100G
+                    memory_limit=512M
                     mbstring.func_overload=0
                     always_populate_raw_post_data=-1
                     default_charset='UTF-8'

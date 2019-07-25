@@ -39,7 +39,7 @@ case $1 in
 		[ -f ${EXTFILE} ] || $(dirname $0)/templates/v3.ext.template "${DOMAIN}" > ${EXTFILE}
 		openssl genrsa -out ${KEY}
 		openssl req -sha512 -new -key ${KEY} -out ${REQ} -subj "${SUBJECT}"
-		openssl x509 -sha512 -req -days 365 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}
+		openssl x509 -sha512 -req -days 730 -in ${REQ} -signkey ${KEY} -out ${CRT} -extfile ${EXTFILE}
 		gpg -ear ${GPGKEY} -o ${KEY}.enc ${KEY}
 		gpg -ear ${GPGKEY} -o ${REQ}.enc ${REQ}
 		gpg -ear ${GPGKEY} -o ${CRT}.enc ${CRT}

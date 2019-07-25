@@ -76,6 +76,12 @@ case $1 in
 					gpg -d ${REQ}.enc | openssl req -text -noout -verify -in -
 					gpg -d ${CRT}.enc | openssl x509 -in - -text -noout
 					;;
+				"csr")
+					gpg -d ${REQ}.enc
+					;;
+				"v3")
+					cat ${EXTFILE}
+					;;
 			esac
 			;;
 		"ing")

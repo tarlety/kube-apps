@@ -79,6 +79,9 @@ case $1 in
 				"csr")
 					gpg -d ${REQ}.enc
 					;;
+				"crt")
+					gpg -d ${CRT}.enc
+					;;
 				"v3")
 					cat ${EXTFILE}
 					;;
@@ -181,7 +184,7 @@ case $1 in
 		;;
 	#------------------------------------------------------------------------------
 	"usage")
-		echo $(basename $0) certs on/off/info/csr/v3
+		echo $(basename $0) certs on/off/info/csr/crt/v3
 		echo $(basename $0) ing on/off
 		echo $(basename $0) ssh ...
 		echo $(basename $0) "store create <namespace> <volname> <capacity> <volpath>"

@@ -87,9 +87,9 @@ spec:
                     ' > /var/www/html/.user.ini
           resources:
             requests:
-              memory: "32Gi"
+              memory: "16Gi"
             limits:
-              memory: "48Gi"
+              memory: "32Gi"
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent

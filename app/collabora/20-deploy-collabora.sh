@@ -49,9 +49,9 @@ spec:
               value: "0"
           resources:
             requests:
-              memory: "32Gi"
+              memory: "8Gi"
             limits:
-              memory: "48Gi"
+              memory: "16Gi"
           ports:
             - name: web
               containerPort: 9980

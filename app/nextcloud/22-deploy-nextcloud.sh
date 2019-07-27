@@ -6,7 +6,8 @@ NEXTCLOUD_REPLICAS=${NEXTCLOUD_REPLICAS:-1}
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.3-fpm}
 NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.0}
 
-VIP=$(dig +short collabora.${DOMAIN} || echo '127.0.0.1')
+NC_IP=$(dig +short nextcloud.${DOMAIN} || echo '127.0.0.1')
+CO_IP=$(dig +short collabora.${DOMAIN} || echo '127.0.0.1')
 
 ACTION=$1
 case $ACTION in
@@ -32,7 +33,7 @@ spec:
         app: nextcloud
     spec:
       hostAliases:
-        - ip: "${VIP}"
+        - ip: "${CO_IP}"
           hostnames:
             - "collabora.${DOMAIN}"
       containers:
@@ -120,7 +121,7 @@ metadata:
   labels:
     app: cron
 spec:
-  schedule: "*/15 * * * *"
+  schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
@@ -134,6 +135,10 @@ spec:
           labels:
             app: cron
         spec:
+          hostAliases:
+            - ip: "${NC_IP}"
+              hostnames:
+                - "nextcloud.${DOMAIN}"
           restartPolicy: Never
           containers:
           - name: cron
@@ -141,8 +146,8 @@ spec:
             imagePullPolicy: IfNotPresent
             command: ["curl"]
             args:
-            - "--fail"
-            - http://web/cron.php
+              - "--fail"
+              - "https://nextcloud.${DOMAIN}"
 EOF
 	;;
 "off")

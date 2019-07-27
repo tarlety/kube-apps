@@ -19,7 +19,7 @@ data:
   MYSQL_DATABASE: "nextcloud"
   MYSQL_USER: "nextcloud"
   NEXTCLOUD_DATA_DIR: "/var/www/html/data"
-  NEXTCLOUD_TRUSTED_DOMAINS: "${APPNAME}.${DOMAIN} web"
+  NEXTCLOUD_TRUSTED_DOMAINS: "${APPNAME}.${DOMAIN}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -39,6 +39,8 @@ metadata:
   namespace: app-${APPNAME}
 data:
   nginx.conf: |
+    server_tokens off;
+
     upstream php-handler {
         server localhost:9000;
         #server unix:/var/run/php/php7.0-fpm.sock;

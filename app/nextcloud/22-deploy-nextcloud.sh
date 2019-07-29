@@ -119,9 +119,10 @@ metadata:
   name: cron
   namespace: app-${APPNAME}
   labels:
+    type: app
     app: cron
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/1 * * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
@@ -136,18 +137,19 @@ spec:
             app: cron
         spec:
           hostAliases:
-            - ip: "${NC_IP}"
-              hostnames:
-                - "nextcloud.${DOMAIN}"
+          - ip: "${NC_IP}"
+            hostnames:
+            - "nextcloud.${DOMAIN}"
           restartPolicy: Never
           containers:
           - name: cron
             image: ${NEXTCLOUD_VERSION}
             imagePullPolicy: IfNotPresent
-            command: ["curl"]
-            args:
-              - "--fail"
-              - "https://nextcloud.${DOMAIN}"
+            command:
+            - "/usr/bin/curl"
+            - "-v"
+            - "--fail"
+            - "https://nextcloud.${DOMAIN}/cron.php"
 EOF
 	;;
 "off")

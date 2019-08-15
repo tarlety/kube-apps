@@ -6,9 +6,6 @@ NEXTCLOUD_REPLICAS=${NEXTCLOUD_REPLICAS:-1}
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.3-fpm}
 NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.0}
 
-NC_IP=$(dig +short nextcloud.${DOMAIN} || echo '127.0.0.1')
-CO_IP=$(dig +short collabora.${DOMAIN} || echo '127.0.0.1')
-
 ACTION=$1
 case $ACTION in
 "on")
@@ -32,10 +29,6 @@ spec:
         type: app
         app: nextcloud
     spec:
-      hostAliases:
-        - ip: "${CO_IP}"
-          hostnames:
-            - "collabora.${DOMAIN}"
       containers:
         - image: ${NEXTCLOUD_VERSION}
           name: nextcloud
@@ -136,10 +129,6 @@ spec:
           labels:
             app: cron
         spec:
-          hostAliases:
-          - ip: "${NC_IP}"
-            hostnames:
-            - "nextcloud.${DOMAIN}"
           restartPolicy: Never
           containers:
           - name: cron

@@ -63,22 +63,6 @@ spec:
                     sed -in -e 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
                     kill -USR2 1
-                    echo '
-                    upload_max_filesize=100G
-                    post_max_size=100G
-                    memory_limit=512M
-                    mbstring.func_overload=0
-                    always_populate_raw_post_data=-1
-                    default_charset='UTF-8'
-                    output_buffering=0
-                    opcache.memory_consumption=256
-                    opcache.interned_strings_buffer=8
-                    opcache.max_accelerated_files=10000
-                    opcache.validate_timestamps=0
-                    opcache.save_comments=1
-                    opcache.huge_code_pages=1
-                    opcache.file_cache=/tmp
-                    ' > /var/www/html/.user.ini
           resources:
             requests:
               memory: "16Gi"

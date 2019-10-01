@@ -50,12 +50,20 @@ spec:
               value: "false"
             - name: CMD_DEFAULT_PERMISSION
               value: "private"
+            - name: CMD_IMAGE_UPLOAD_TYPE
+              value: "filesystem"
+            - name: CMD_DOMAIN
+              value: hackmd.${DOMAIN}
+            - name: CMD_PROTOCOL_USESSL
+              value: "false"
+            - name: CMD_URL_ADDPORT
+              value: "3000"
           ports:
             - name: web
               containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - mountPath: "/hackmd/public/uploads"
+            - mountPath: "/codimd/public/uploads"
               name: data
               subPath: uploads
       volumes:

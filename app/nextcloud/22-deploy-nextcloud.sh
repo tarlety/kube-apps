@@ -123,6 +123,7 @@ spec:
             command:
             - "/usr/bin/curl"
             - "-v"
+            - "-k"
             - "--fail"
             - "https://nextcloud.${DOMAIN}/cron.php"
 EOF

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SECRET_STORE=${SECRET_STORE:-${HOME}/store/secrets}
 APPNAME=${APPNAME:-hackmd}
 
 ACTION=$1
@@ -28,7 +29,13 @@ EOF
 "off")
 	kubectl delete -n app-${APPNAME} secret ${APPNAME}-ldap
 	;;
+"save")
+	kubectl get secret hackmd-ldap -o yaml -n app-hackmd | gpg -ear $(whoami) -o ${SECRET_STORE}/hackmd-ldap.enc
+	;;
+"load")
+	gpg -d ${SECRET_STORE}/hackmd-ldap.enc | kubectl apply -f -
+	;;
 *)
-	echo $(basename $0) on/off
+	echo $(basename $0) on/off/save/load
 	;;
 esac

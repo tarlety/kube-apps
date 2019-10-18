@@ -36,6 +36,9 @@ spec:
         - image: ${HACKMD_VERSION}
           name: hackmd
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: ${APPNAME}-ldap
           env:
             - name: CMD_DB_PASSWORD
               valueFrom:

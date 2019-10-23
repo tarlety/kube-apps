@@ -3,8 +3,10 @@
 APPNAME=${APPNAME:-nextcloud}
 NEXTCLOUD_REPLICAS=${NEXTCLOUD_REPLICAS:-1}
 
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.3-fpm}
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.0}
+# https://hub.docker.com/_/nextcloud
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.5-fpm}
+# https://hub.docker.com/_/nginx
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.4}
 
 ACTION=$1
 case $ACTION in
@@ -62,6 +64,10 @@ spec:
                     sed -in -e 's/^pm.start_servers = .*/pm.start_servers = 30/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
+                    apt-get update -y
+                    apt-get install libsmbclient-dev -y
+                    pecl install smbclient
+                    echo 'extension=smbclient.so' | tee -a /usr/local/etc/php/conf.d/docker-php-ext-intl.ini
                     kill -USR2 1
           resources:
             requests:
@@ -121,6 +127,7 @@ spec:
             command:
             - "/usr/bin/curl"
             - "-v"
+            - "-k"
             - "--fail"
             - "https://nextcloud.${DOMAIN}/cron.php"
 EOF

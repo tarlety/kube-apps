@@ -1,78 +1,69 @@
 #!/bin/bash
 
-APPNAME=${APPNAME:-hackmd}
+APPNAME=${APPNAME:-odoo}
 
-HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.3.1}
-#POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
-# The reason keeping postgres 9.6:
-# 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.2.
-# 2. postgres 9.6 End of Life: 2021-09
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.12}
-POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.4.7}
+# https://hub.docker.com/_/odoo
+ODOO_VERSION=${ODOO_VERSION:-odoo:12.0}
+# https://hub.docker.com/_/postgres
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:12.0}
+# https://hub.docker.com/r/wrouesnel/postgres_exporter
+POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.5.1}
 
 ACTION=$1
 case $ACTION in
 "on")
-	cat <<EOF | kubectl create -f -
+        cat <<EOF | kubectl create -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hackmd
+  name: ${APPNAME}
   namespace: app-${APPNAME}
   labels:
     type: app
-    app: hackmd
+    app: ${APPNAME}
 spec:
   selector:
     matchLabels:
-      app: hackmd
+      app: ${APPNAME}
   template:
     metadata:
       labels:
         type: app
-        app: hackmd
+        app: ${APPNAME}
     spec:
       containers:
-        - image: ${HACKMD_VERSION}
-          name: hackmd
+        - image: ${ODOO_VERSION}
+          name: ${APPNAME}
           imagePullPolicy: IfNotPresent
           envFrom:
-            - secretRef:
-                name: ${APPNAME}-ldap
+            - configMapRef:
+                name: ${APPNAME}-env
           env:
-            - name: CMD_DB_PASSWORD
+            - name: PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: passwords
                   key: user-password
-            - name: CMD_DB_URL
-              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
-            - name: CMD_ALLOW_EMAIL_REGISTER
-              value: "false"
-            - name: CMD_ALLOW_ANONYMOUS
-              value: "false"
-            - name: CMD_DEFAULT_PERMISSION
-              value: "private"
-            - name: CMD_IMAGE_UPLOAD_TYPE
-              value: "filesystem"
-            - name: CMD_DOMAIN
-              value: hackmd.${DOMAIN}
-            - name: CMD_PROTOCOL_USESSL
-              value: "false"
-            - name: CMD_URL_ADDPORT
-              value: "3000"
           ports:
             - name: web
-              containerPort: 3000
+              containerPort: 8069
               protocol: TCP
           volumeMounts:
-            - mountPath: "/codimd/public/uploads"
+            - mountPath: "/var/lib/odoo"
               name: data
-              subPath: uploads
+              subPath: odoo
+            - mountPath: "/mnt/extra-addons"
+              name: data
+              subPath: extra-addons
+            - mountPath: "/backup"
+              name: backup
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: normal
+      - name: data
+        persistentVolumeClaim:
+          claimName: normal
+      - name: backup
+        persistentVolumeClaim:
+          claimName: cold
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -118,17 +109,17 @@ spec:
             - mountPath: "/var/lib/postgresql/data/pgdata"
               name: data
               subPath: pgdata
+            - mountPath: "/backup"
+              name: backup
         - image: ${POSTGRES_EXPORTOR_VERSION}
           name: exporter
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: postgres-env
           env:
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: user-password
             - name: DATA_SOURCE_NAME
-              value: postgres://hackmd:\$(POSTGRES_PASSWORD)@localhost:5432/postgres?sslmode=disable
+              value: postgres://\$(POSTGRES_USER):\$(POSTGRES_PASSWORD)@localhost:5432/postgres?sslmode=disable
           ports:
             - name: exporter
               containerPort: 9187
@@ -137,12 +128,15 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: normal
+      - name: backup
+        persistentVolumeClaim:
+          claimName: cold
 EOF
-	;;
+        ;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy hackmd
-	kubectl delete -n app-${APPNAME} deploy postgres
-	;;
+        kubectl delete -n app-${APPNAME} deploy ${APPNAME}
+        kubectl delete -n app-${APPNAME} deploy postgres
+        ;;
 *)
 	echo $(basename $0) on/off
 	;;

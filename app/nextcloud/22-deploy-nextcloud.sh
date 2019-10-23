@@ -64,6 +64,10 @@ spec:
                     sed -in -e 's/^pm.start_servers = .*/pm.start_servers = 30/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
+                    apt-get update -y
+                    apt-get install libsmbclient-dev -y
+                    perl install smbclient
+                    echo 'extension=smbclient.so' | tee -a /usr/local/etc/php/conf.d/docker-php-ext-intl.ini
                     kill -USR2 1
           resources:
             requests:

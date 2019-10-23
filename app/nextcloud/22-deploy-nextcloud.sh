@@ -66,7 +66,7 @@ spec:
                     sed -in -e 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 50/g' /usr/local/etc/php-fpm.d/www.conf
                     apt-get update -y
                     apt-get install libsmbclient-dev -y
-                    perl install smbclient
+                    pecl install smbclient
                     echo 'extension=smbclient.so' | tee -a /usr/local/etc/php/conf.d/docker-php-ext-intl.ini
                     kill -USR2 1
           resources:

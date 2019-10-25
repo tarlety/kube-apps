@@ -71,9 +71,11 @@ spec:
                     kill -USR2 1
           resources:
             requests:
-              memory: "16Gi"
+              cpu: 1000m
+              memory: "1Gi"
             limits:
-              memory: "32Gi"
+              cpu: 2000m
+              memory: "16Gi"
         - image: ${NGINX_VERSION}
           name: nginx
           imagePullPolicy: IfNotPresent

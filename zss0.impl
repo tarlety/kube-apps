@@ -6,7 +6,7 @@ case $1 in
 	"app")
 		PROJECTNAME=zerus
 		APPNAME=kube-apps-platform
-		APPVERSION=0.1.2
+		APPVERSION=0.1.3
 		;;
 	"config")
 		CONFIGKEYS="domain subject hostctrl storagectrl"
@@ -138,6 +138,7 @@ case $1 in
 					source admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
 					source admin/16-ing.sh ${APPNAME}
 					source admin/18-pvc.sh ${APPNAME}
+					source admin/70-resource-quota.sh ${APPNAME}
 					;;
 				"clean")
 					source admin/00-namespace.sh ${APPNAME} off

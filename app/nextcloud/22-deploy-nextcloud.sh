@@ -34,7 +34,7 @@ spec:
       containers:
         - image: ${NEXTCLOUD_VERSION}
           name: nextcloud
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: nextcloud-env

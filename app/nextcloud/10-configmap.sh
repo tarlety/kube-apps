@@ -101,10 +101,11 @@ data:
         # rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
 
         location = /.well-known/carddav {
-          return 301 \$scheme://\$host/remote.php/dav;
+            return 301 https://\$server_name/remote.php/dav;
         }
+
         location = /.well-known/caldav {
-          return 301 \$scheme://\$host/remote.php/dav;
+            return 301 https://\$server_name/remote.php/dav;
         }
 
         # set max upload size
@@ -187,6 +188,8 @@ data:
             # Optional: Don't log access to other assets
             access_log off;
         }
+
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     }
 EOF
 	;;

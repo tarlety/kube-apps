@@ -4,7 +4,7 @@ APPNAME=${APPNAME:-nextcloud}
 NEXTCLOUD_REPLICAS=${NEXTCLOUD_REPLICAS:-1}
 
 # https://hub.docker.com/_/nextcloud
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.5-fpm}
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:16.0.6-fpm}
 # https://hub.docker.com/_/nginx
 NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.4}
 
@@ -34,7 +34,7 @@ spec:
       containers:
         - image: ${NEXTCLOUD_VERSION}
           name: nextcloud
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: nextcloud-env

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 APPNAME=${APPNAME:-nextcloud}
-NEXTCLOUD_REPLICAS=${NEXTCLOUD_REPLICAS:-1}
+REPLICAS=${REPLICAS:-1}
 
 # https://hub.docker.com/_/nextcloud
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:17.0.1-fpm}
@@ -21,7 +21,7 @@ metadata:
     type: app
     app: nextcloud
 spec:
-  replicas: ${NEXTCLOUD_REPLICAS}
+  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: nextcloud
@@ -141,8 +141,8 @@ EOF
 *)
 	echo "$(basename $0) on/off"
 	echo ""
-	echo "Nextcloud Replicas can be scaled up runtime."
+	echo "Replicas can be scaled up at runtime."
 	echo "Ex:"
-	echo "NEXTCLOUD_REPLICAS=3 ./$(basename $0) on"
+	echo "REPLICAS=3 ./$(basename $0) on"
 	;;
 esac

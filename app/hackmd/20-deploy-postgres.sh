@@ -2,78 +2,17 @@
 
 APPNAME=${APPNAME:-hackmd}
 
-HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.3.1}
 #POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
-# The reason keeping postgres 9.6:
-# 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.2.
+# The reason to keep postgres 9.6:
+# 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.
 # 2. postgres 9.6 End of Life: 2021-09
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.12}
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.16}
 POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.4.7}
 
 ACTION=$1
 case $ACTION in
 "on")
 	cat <<EOF | kubectl create -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hackmd
-  namespace: app-${APPNAME}
-  labels:
-    type: app
-    app: hackmd
-spec:
-  selector:
-    matchLabels:
-      app: hackmd
-  template:
-    metadata:
-      labels:
-        type: app
-        app: hackmd
-    spec:
-      containers:
-        - image: ${HACKMD_VERSION}
-          name: hackmd
-          imagePullPolicy: IfNotPresent
-          envFrom:
-            - secretRef:
-                name: ${APPNAME}-ldap
-          env:
-            - name: CMD_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: user-password
-            - name: CMD_DB_URL
-              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
-            - name: CMD_ALLOW_EMAIL_REGISTER
-              value: "false"
-            - name: CMD_ALLOW_ANONYMOUS
-              value: "false"
-            - name: CMD_DEFAULT_PERMISSION
-              value: "private"
-            - name: CMD_IMAGE_UPLOAD_TYPE
-              value: "filesystem"
-            - name: CMD_DOMAIN
-              value: hackmd.${DOMAIN}
-            - name: CMD_PROTOCOL_USESSL
-              value: "false"
-            - name: CMD_URL_ADDPORT
-              value: "3000"
-          ports:
-            - name: web
-              containerPort: 3000
-              protocol: TCP
-          volumeMounts:
-            - mountPath: "/codimd/public/uploads"
-              name: data
-              subPath: uploads
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: normal
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -140,10 +79,9 @@ spec:
 EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy hackmd
 	kubectl delete -n app-${APPNAME} deploy postgres
 	;;
 *)
-	echo $(basename $0) on/off
+	echo "$(basename $0) on/off"
 	;;
 esac

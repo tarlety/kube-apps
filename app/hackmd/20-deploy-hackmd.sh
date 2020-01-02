@@ -3,7 +3,7 @@
 APPNAME=${APPNAME:-hackmd}
 REPLICAS=${REPLICAS:-1}
 
-HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.3.1}
+HACKMD_VERSION=${HACKMD_VERSION:-hackmdio/hackmd:1.4.1}
 
 ACTION=$1
 case $ACTION in

@@ -6,7 +6,7 @@ case $1 in
 	"app")
 		PROJECTNAME=zerus
 		APPNAME=kube-apps-platform
-		APPVERSION=0.1.3
+		APPVERSION=0.1.4
 		;;
 	"config")
 		CONFIGKEYS="domain subject hostctrl storagectrl"
@@ -181,6 +181,9 @@ case $1 in
 					;;
 			esac
 			;;
+      "verbose")
+        kubectl describe pod --all-namespaces | grep Image: | cut -d':' -f2- | sed 's/ *//' | sort | uniq
+        ;;
 		esac
 		;;
 	#------------------------------------------------------------------------------
@@ -192,6 +195,7 @@ case $1 in
 		echo $(basename $0) "store delete <namespace> <volname>"
 		echo $(basename $0) "store secret <namespace>"
 		echo $(basename $0) app appname init/preflight/on/off/clean/print
+		echo $(basename $0) "verbose"
 		;;
 esac
 

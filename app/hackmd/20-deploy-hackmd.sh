@@ -64,7 +64,7 @@ spec:
               containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - mountPath: "/codimd/public/uploads"
+            - mountPath: "/home/hackmd/app/public/uploads"
               name: data
               subPath: uploads
       volumes:

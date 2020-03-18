@@ -78,6 +78,7 @@ data:
         add_header X-Download-Options noopen;
         add_header X-Permitted-Cross-Domain-Policies none;
         add_header Referrer-Policy no-referrer;
+        add_header X-Frame-Options "SAMEORIGIN";
 
         # Remove X-Powered-By, which is an information leak
         fastcgi_hide_header X-Powered-By;

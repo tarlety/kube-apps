@@ -4,9 +4,9 @@ APPNAME=${APPNAME:-nextcloud}
 REPLICAS=${REPLICAS:-1}
 
 # https://hub.docker.com/_/nextcloud
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:17.0.1-fpm}
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:18.0.2-fpm}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.4}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.17.9}
 
 ACTION=$1
 case $ACTION in
@@ -53,6 +53,8 @@ spec:
             - mountPath: /var/www/html
               name: data
               subPath: html
+            - mountPath: "/backup"
+              name: backup
           lifecycle:
             postStart:
               exec:
@@ -97,6 +99,9 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
+      - name: backup
+        persistentVolumeClaim:
+          claimName: cold
 ---
 apiVersion: batch/v1beta1
 kind: CronJob

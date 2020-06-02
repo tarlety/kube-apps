@@ -6,7 +6,7 @@
 # - admin page: https://collabora-online-domain/loleaflet/dist/admin/admin.html
 # - troubleshooting restaring issue: https://github.com/CollaboraOnline/Docker-CODE/issues/32
 APPNAME=${APPNAME:-collabora}
-COLLABORA_VERSION=${COLLABORA_VERSION:-collabora/code:4.0.5.2}
+COLLABORA_VERSION=${COLLABORA_VERSION:-collabora/code:4.2.3.1}
 
 ACTION=$1
 case $ACTION in

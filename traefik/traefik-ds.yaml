@@ -36,7 +36,7 @@ spec:
         configMap:
           name: traefik-conf
       containers:
-      - image: traefik:v1.7
+      - image: traefik:v1.7.25
         name: traefik-ingress-lb
         volumeMounts:
         - mountPath: "/secret/cert.crt"
@@ -64,7 +64,8 @@ spec:
           - --api
           - --kubernetes
           - --configfile=/config/traefik.toml
-          - --logLevel=DEBUG
+          - --accessLog.fields.names="Duraion=keep"
+          - --logLevel=ERROR
 ---
 kind: Service
 apiVersion: v1

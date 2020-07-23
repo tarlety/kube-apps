@@ -6,8 +6,8 @@ APPNAME=${APPNAME:-hackmd}
 # The reason to keep postgres 9.6:
 # 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.
 # 2. postgres 9.6 End of Life: 2021-09
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.16}
-POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.4.7}
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.18}
+POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.8.0}
 
 ACTION=$1
 case $ACTION in

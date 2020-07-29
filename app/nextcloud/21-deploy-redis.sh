@@ -43,7 +43,7 @@ spec:
               containerPort: 6379
               protocol: TCP
           volumeMounts:
-            - mountPath: /var/lib/redis
+            - mountPath: /data
               name: data
               subPath: redis
       volumes:

@@ -81,6 +81,6 @@ EOF
 	echo ""
 	echo "Replicas can be scaled up at runtime."
 	echo "Ex:"
-	echo "REPLICAS=3 ./$(basename $0) on"
+	echo "REPLICAS=1 ./$(basename $0) on"
 	;;
 esac

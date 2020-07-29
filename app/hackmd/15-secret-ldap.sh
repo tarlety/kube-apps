@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SECRET_STORE=${SECRET_STORE:-${HOME}/store/secrets}
+SECRET_STORE=${SECRET_STORE:-${HOME}/store/.secrets}
 APPNAME=${APPNAME:-hackmd}
 
 ACTION=$1

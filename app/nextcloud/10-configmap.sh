@@ -46,12 +46,19 @@ data:
         #server unix:/var/run/php/php7.0-fpm.sock;
     }
 
+    # shared memory zone 'mylimit', size=10m, key=\$binary_remote_addr
+    limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
+    limit_rate_after 512;
+    limit_rate 1024k;
+    # every key (ip) burst up to 10 requests without delay
+    limit_req zone=mylimit burst=10 nodelay;
+
     server {
         listen 80;
         listen [::]:80;
         server_name ${APPNAME}.${DOMAIN};
         # enforce https
-        #return 301 https://$server_name$request_uri;
+        #return 301 https://\$server_name\$request_uri;
         #listen 443 ssl http2;
         #listen [::]:443 ssl http2;
         #server_name cloud.example.com;
@@ -110,7 +117,8 @@ data:
         }
 
         # set max upload size
-        client_max_body_size 51200M;
+        client_body_buffer_size 2048M;
+        client_max_body_size 2048M;
         fastcgi_buffers 64 4K;
 
         # Disable gzip for better performance

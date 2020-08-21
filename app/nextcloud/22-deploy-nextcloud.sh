@@ -7,6 +7,8 @@ REPLICAS=${REPLICAS:-1}
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:19.0.1-fpm}
 # https://hub.docker.com/_/nginx
 NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.1}
+# https://hub.docker.com/_/alpine
+ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.12.0}
 
 ACTION=$1
 case $ACTION in
@@ -74,7 +76,7 @@ spec:
           resources:
             requests:
               cpu: 1000m
-              memory: "1Gi"
+              memory: "8Gi"
             limits:
               cpu: 2000m
               memory: "16Gi"
@@ -112,8 +114,8 @@ metadata:
     type: app
     app: cron
 spec:
-  schedule: "*/1 * * * *"
-  successfulJobsHistoryLimit: 3
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 4
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   jobTemplate:
@@ -129,13 +131,12 @@ spec:
           restartPolicy: Never
           containers:
           - name: cron
-            image: ${NEXTCLOUD_VERSION}
+            image: ${ALPINE_VERSION}
             imagePullPolicy: IfNotPresent
             command:
-            - "/usr/bin/curl"
-            - "-v"
-            - "-k"
-            - "--fail"
+            - "/usr/bin/wget"
+            - "-O"
+            - "-"
             - "https://nextcloud.${DOMAIN}/cron.php"
 EOF
 	;;

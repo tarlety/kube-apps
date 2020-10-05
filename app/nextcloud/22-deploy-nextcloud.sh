@@ -4,9 +4,9 @@ APPNAME=${APPNAME:-nextcloud}
 REPLICAS=${REPLICAS:-1}
 
 # https://hub.docker.com/_/nextcloud
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:19.0.1-fpm}
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:19.0.3-fpm}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.1}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.2}
 # https://hub.docker.com/_/alpine
 ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.12.0}
 

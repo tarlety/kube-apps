@@ -50,8 +50,8 @@ data:
     limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
     limit_rate_after 512;
     limit_rate 1024k;
-    # every key (ip) burst up to 10 requests without delay
-    limit_req zone=mylimit burst=10 nodelay;
+    # every key (ip) burst up to 100 requests without delay
+    limit_req zone=mylimit burst=100 nodelay;
 
     server {
         listen 80;

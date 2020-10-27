@@ -13,7 +13,7 @@ ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.12.0}
 ACTION=$1
 case $ACTION in
 "on")
-	cat <<EOF | kubectl apply -f -
+    cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -139,16 +139,16 @@ spec:
             - "-"
             - "https://nextcloud.${DOMAIN}/cron.php"
 EOF
-	;;
+    ;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy nextcloud
-	kubectl delete -n app-${APPNAME} cronjob cron
-	;;
+    kubectl delete -n app-${APPNAME} deploy nextcloud
+    kubectl delete -n app-${APPNAME} cronjob cron
+    ;;
 *)
-	echo "$(basename $0) on/off"
-	echo ""
-	echo "Replicas can be scaled up at runtime."
-	echo "Ex:"
-	echo "REPLICAS=3 ./$(basename $0) on"
-	;;
+    echo "$(basename $0) on/off"
+    echo ""
+    echo "Replicas can be scaled up at runtime."
+    echo "Ex:"
+    echo "REPLICAS=3 ./$(basename $0) on"
+    ;;
 esac

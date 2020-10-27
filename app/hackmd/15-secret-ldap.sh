@@ -1,12 +1,18 @@
 #!/bin/bash
 
-SECRET_STORE=${SECRET_STORE:-${HOME}/store/.secrets}
+SECRET_STORE=${SECRET_STORE:-${STORE}/app-secret}
 APPNAME=${APPNAME:-hackmd}
 
 ACTION=$1
 case $ACTION in
 "on")
-	cat <<EOF | kubectl create -f -
+	gpg -d ${SECRET_STORE}/hackmd-ldap.enc | kubectl apply -f -
+	;;
+"off")
+	kubectl delete -n app-${APPNAME} secret ${APPNAME}-ldap
+	;;
+"preflight")
+	cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
@@ -25,17 +31,9 @@ data:
   CMD_LDAP_USERNAMEFIELD: $(echo "" | head -c-1 | base64 -w0 | sed 's/\//_/g')
   CMD_LDAP_PROVIDERNAME: $(echo "" | head -c-1 | base64 -w0 | sed 's/\//_/g')
 EOF
-	;;
-"off")
-	kubectl delete -n app-${APPNAME} secret ${APPNAME}-ldap
-	;;
-"save")
-	kubectl get secret hackmd-ldap -o yaml -n app-hackmd | gpg -ear $(whoami) -o ${SECRET_STORE}/hackmd-ldap.enc
-	;;
-"load")
-	gpg -d ${SECRET_STORE}/hackmd-ldap.enc | kubectl apply -f -
+	kubectl get secret ${APPNAME}-ldap -o yaml -n app-${APPNAME} | gpg -ear $(whoami) -o ${SECRET_STORE}/${APPNAME}-ldap.enc
 	;;
 *)
-	echo $(basename $0) on/off/save/load
+	echo $(basename $0) on/off/preflight
 	;;
 esac

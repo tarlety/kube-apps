@@ -12,14 +12,29 @@ metadata:
   name: web
   namespace: app-${APPNAME}
   labels:
-    app: snipe-it
+    app: ${APPNAME}
 spec:
   ports:
     - name: web
       port: 80
       protocol: TCP
   selector:
-    app: snipe-it
+    app: ${APPNAME}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: snipe-it
+  namespace: app-${APPNAME}
+  labels:
+    app: ${APPNAME}
+spec:
+  ports:
+    - name: snipe-it
+      port: 80
+      protocol: TCP
+  selector:
+    app: ${APPNAME}
 ---
 apiVersion: v1
 kind: Service
@@ -36,8 +51,7 @@ spec:
 EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} svc web
-	kubectl delete -n app-${APPNAME} svc mysql
+	kubectl delete -n app-${APPNAME} svc web snipe-it mysql
 	;;
 *)
 	echo $(basename $0) on/off

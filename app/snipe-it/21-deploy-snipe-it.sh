@@ -2,9 +2,11 @@
 
 APNAME=${APPNAME:-snipe-it}
 
-SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.0.1}
-# https://hub.docker.com/_/alpine
-ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.12.0}
+SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.0.4}
+# https://hub.docker.com/_/nginx
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.2}
+# https://hub.docker.com/_/busybox
+BUSYBOX_VERSION=${BUSYBOX_VERSION:-busybox:1.32.0}
 
 ACTION=$1
 case $ACTION in
@@ -26,7 +28,7 @@ spec:
     spec:
       initContainers:
         - name: config-data
-          image: busybox
+          image: ${BUSYBOX_VERSION}
           command: ["chown","-R","1000", "/var/www/html/storage/framework/sessions"]
           volumeMounts:
             - name: data
@@ -37,8 +39,8 @@ spec:
           name: snipe-it
           imagePullPolicy: IfNotPresent
           ports:
-            - name: web
-              containerPort: 3000
+            - name: snipe-it
+              containerPort: 80
               protocol: TCP
           env:
             - name: MYSQL_PASSWORD
@@ -51,6 +53,8 @@ spec:
                 name: env
             - secretRef:
                 name: ${APPNAME}-secret
+            - secretRef:
+                name: ${APPNAME}-mail
           volumeMounts:
             - mountPath: "/var/log/apache2"
               name: data
@@ -70,10 +74,41 @@ spec:
         - name: backup
           persistentVolumeClaim:
             claimName: cold
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: app-${APPNAME}
+spec:
+  selector:
+    matchLabels:
+      app: snipe-it
+  template:
+    metadata:
+      labels:
+        app: snipe-it
+    spec:
+      containers:
+        - image: ${NGINX_VERSION}
+          name: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-conf
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
 EOF
     ;;
 "off")
-    kubectl delete -n app-${APPNAME} deploy snipe-it
+    kubectl delete -n app-${APPNAME} deploy snipe-it nginx
     ;;
 *)
     echo $(basename $0) on/off

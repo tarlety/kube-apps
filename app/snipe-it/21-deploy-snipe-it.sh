@@ -67,6 +67,13 @@ spec:
             - mountPath: /var/www/html/storage/framework/sessions
               name: data
               subPath: sessions
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "curl https://raw.githubusercontent.com/tarlety/snipe-it/49956742e30a9580a52ef3186c28537930e8cbff/public/css/build/signature-pad.min.css -o /var/www/html/public/css/signature-pad.min.css"
       volumes:
         - name: data
           persistentVolumeClaim:

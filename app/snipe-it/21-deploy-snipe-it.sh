@@ -73,7 +73,7 @@ spec:
                 command:
                   - "/bin/sh"
                   - "-c"
-                  - "curl https://raw.githubusercontent.com/tarlety/snipe-it/49956742e30a9580a52ef3186c28537930e8cbff/public/css/build/signature-pad.min.css -o /var/www/html/public/css/signature-pad.min.css"
+                  - "curl https://raw.githubusercontent.com/tarlety/snipe-it/b0315930659ded6fe1583cca21eafb2aafa744e3/public/css/build/signature-pad.min.css -o /var/www/html/public/css/signature-pad.min.css"
       volumes:
         - name: data
           persistentVolumeClaim:

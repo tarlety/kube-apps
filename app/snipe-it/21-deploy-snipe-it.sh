@@ -2,9 +2,9 @@
 
 APNAME=${APPNAME:-snipe-it}
 
-SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.0.4}
+SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.0.7}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.2}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.4}
 # https://hub.docker.com/_/busybox
 BUSYBOX_VERSION=${BUSYBOX_VERSION:-busybox:1.32.0}
 
@@ -67,13 +67,6 @@ spec:
             - mountPath: /var/www/html/storage/framework/sessions
               name: data
               subPath: sessions
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - "/bin/sh"
-                  - "-c"
-                  - "curl https://raw.githubusercontent.com/tarlety/snipe-it/b0315930659ded6fe1583cca21eafb2aafa744e3/public/css/build/signature-pad.min.css -o /var/www/html/public/css/signature-pad.min.css"
       volumes:
         - name: data
           persistentVolumeClaim:

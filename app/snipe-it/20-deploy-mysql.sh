@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APNAME=${APPNAME:-snipe-it}
+APPNAME=${APPNAME:-snipe-it}
 
 MYSQL_VERSION=${MYSQL_VERSION:-mariadb:10.5.8}
 

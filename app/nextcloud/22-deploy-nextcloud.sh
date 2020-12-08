@@ -6,7 +6,7 @@ REPLICAS=${REPLICAS:-1}
 # https://hub.docker.com/_/nextcloud
 NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:20.0.2-fpm}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.4}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.5}
 # https://hub.docker.com/_/alpine
 ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.12.1}
 

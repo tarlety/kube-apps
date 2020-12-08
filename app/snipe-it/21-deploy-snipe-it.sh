@@ -17,6 +17,9 @@ kind: Deployment
 metadata:
   name: snipe-it
   namespace: app-${APPNAME}
+  labels:
+    type: app
+    app: snipe-it
 spec:
   selector:
     matchLabels:
@@ -24,6 +27,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: snipe-it
     spec:
       initContainers:
@@ -80,6 +84,9 @@ kind: Deployment
 metadata:
   name: nginx
   namespace: app-${APPNAME}
+  labels:
+    type: app
+    app: nginx
 spec:
   selector:
     matchLabels:
@@ -87,6 +94,7 @@ spec:
   template:
     metadata:
       labels:
+        type: app
         app: snipe-it
     spec:
       containers:

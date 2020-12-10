@@ -20,17 +20,17 @@ metadata:
   namespace: app-${APPNAME}
 type: Opaque
 data:
-  MAIL_HOST: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_PORT: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_USERNAME: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_PASSWORD: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_ENCRYPTION: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_FROM_ADDR: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_FROM_NAME: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_REPLYTO_ADDR: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
-  MAIL_REPLYTO_NAME: $(echo '' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_HOST: $(echo 'changeme.localhost.localdomain' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_PORT: $(echo '0' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_USERNAME: $(echo 'chageme' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_PASSWORD: $(echo 'chageme' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_ENCRYPTION: $(echo 'false' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_FROM_ADDR: $(echo 'changeme@localhost.localdomain' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_FROM_NAME: $(echo 'changeme' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_REPLYTO_ADDR: $(echo 'chaneme@localhost.localdomain' | head -c-1 | base64 -w0 | sed 's/\//_/g')
+  MAIL_REPLYTO_NAME: $(echo 'chageme' | head -c-1 | base64 -w0 | sed 's/\//_/g')
 EOF
-    kubectl get secret ${APPNAME}-mail -o yaml -n app-${APPNAME} | gpg -ear $(whoami) -o ${SECRET_STORE}/${APPNAME}-mail.enc
+    kubectl get secret ${APPNAME}-mail -o yaml -n app-${APPNAME} | gpg -ear $GPGKEY -o ${SECRET_STORE}/${APPNAME}-mail.enc
     ;;
 *)
     echo $(basename $0) on/off/preflight

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APNAME=${APPNAME:-snipe-it}
+APPNAME=${APPNAME:-snipe-it}
 
 SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.0.10}
 # https://hub.docker.com/_/nginx

@@ -6,7 +6,7 @@ case $1 in
 	"app")
 		PROJECTNAME=zerus
 		APPNAME=kube-apps-platform
-		APPVERSION=0.2.0
+		APPVERSION=0.3.0
 		;;
 	"config")
 		CONFIGKEYS="domain subject hostctrl storagectrl"
@@ -131,17 +131,17 @@ case $1 in
 			APPNAME=$1
 			case $2 in
 				"init")
-					source admin/00-namespace.sh ${APPNAME} on
+					admin/00-namespace.sh ${APPNAME} on
 					;;
 				"preflight")
-					source admin/11-secrets.sh ${APPNAME}
-					source admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
-					source admin/16-ing.sh ${APPNAME}
-					source admin/18-pvc.sh ${APPNAME}
-					source admin/70-resource-quota.sh ${APPNAME}
+					admin/11-secrets.sh ${APPNAME}
+					#admin/14-network-policy-deny-from-other-namespaces.sh ${APPNAME}
+					DOMAIN=$DOMAIN admin/16-ing.sh ${APPNAME}
+					admin/18-pvc.sh ${APPNAME}
+					#admin/70-resource-quota.sh ${APPNAME}
 					for script in app/${APPNAME}/*.sh
 					do
-						source ${script} preflight
+						GPGKEY=$GPGKEY SECRET_STORE=${SECRET_STORE} DOMAIN=$DOMAIN ${script} preflight
 					done
 					;;
 				"clean")
@@ -150,13 +150,13 @@ case $1 in
 				"on")
 					for script in app/${APPNAME}/*.sh
 					do
-						source ${script} on
+						SECRET_STORE=${SECRET_STORE} DOMAIN=$DOMAIN ${script} on
 					done
 					;;
 				"off")
 					for script in app/${APPNAME}/*.sh
 					do
-						source ${script} off
+						SECRET_STORE=${SECRET_STORE} DOMAIN=$DOMAIN ${script} off
 					done
 					;;
 				"print")

@@ -2,7 +2,7 @@
 
 APPNAME=${APPNAME:-snipe-it}
 
-SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.1.3}
+SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v5.1.5}
 # https://hub.docker.com/_/nginx
 NGINX_VERSION=${NGINX_VERSION:-nginx:1.19.6}
 # https://hub.docker.com/_/busybox

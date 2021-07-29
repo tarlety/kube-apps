@@ -2,9 +2,8 @@
 
 APPNAME=${APPNAME:-nextcloud}
 
-MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.5.8}
-#MARIADB_VERSION=${MARIADB_VERSION:-bitnami/mariadb:10.3.16}
-MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.12.1}
+MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.6.3}
+MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.13.0}
 
 ACTION=$1
 case $ACTION in
@@ -36,7 +35,7 @@ spec:
         - image: ${MARIADB_VERSION}
           name: mariadb
           imagePullPolicy: IfNotPresent
-          args: ["--innodb-buffer-pool-size=1G", "--innodb_io_capacity=4000"]
+          args: ["--innodb-buffer-pool-size=1G", "--innodb_io_capacity=4000", "--innodb-read-only-compressed=OFF"]
           envFrom:
             - configMapRef:
                 name: mysql-env

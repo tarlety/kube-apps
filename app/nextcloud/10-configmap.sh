@@ -46,13 +46,6 @@ data:
         #server unix:/var/run/php/php7.0-fpm.sock;
     }
 
-    # shared memory zone 'mylimit', size=10m, key=\$binary_remote_addr
-    limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
-    limit_rate_after 512;
-    limit_rate 1024k;
-    # every key (ip) burst up to 100 requests without delay
-    limit_req zone=mylimit burst=100 nodelay;
-
     server {
         listen 80;
         listen [::]:80;

@@ -4,11 +4,11 @@ APPNAME=${APPNAME:-nextcloud}
 REPLICAS=${REPLICAS:-1}
 
 # https://hub.docker.com/_/nextcloud
-NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:22.1.1-fpm}
+NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION:-nextcloud:22.2.3-fpm}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.21.1}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.21.4}
 # https://hub.docker.com/_/alpine
-ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.14.0}
+ALPINE_VERSION=${ALPINE_VERSION:-alpine:3.15.0}
 
 ACTION=$1
 case $ACTION in

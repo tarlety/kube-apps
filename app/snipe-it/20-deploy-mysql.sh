@@ -2,7 +2,7 @@
 
 APPNAME=${APPNAME:-snipe-it}
 
-MYSQL_VERSION=${MYSQL_VERSION:-mariadb:10.5.8}
+MYSQL_VERSION=${MYSQL_VERSION:-mariadb:10.6.5}
 
 ACTION=$1
 case $ACTION in

@@ -3,11 +3,11 @@
 APPNAME=${APPNAME:-odoo}
 
 # https://hub.docker.com/_/odoo
-ODOO_VERSION=${ODOO_VERSION:-odoo:12.0}
+ODOO_VERSION=${ODOO_VERSION:-odoo:15.0}
 # https://hub.docker.com/_/postgres
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:12.0}
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:14.1}
 # https://hub.docker.com/r/wrouesnel/postgres_exporter
-POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.5.1}
+POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.8.0}
 
 ACTION=$1
 case $ACTION in

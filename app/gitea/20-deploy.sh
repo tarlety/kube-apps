@@ -2,9 +2,9 @@
 
 APPNAME=${APPNAME:-gitea}
 
-GITEA_VERSION=${GITEA_VERSION:-gitea/gitea:1.15.8}
+GITEA_VERSION=${GITEA_VERSION:-gitea/gitea:1.16.1}
 # keep postgres 11: The data directory was initialized by PostgreSQL version 11, which is not compatible with this version 12.3
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.14}
+POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.15}
 POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.8.0}
 
 ACTION=$1

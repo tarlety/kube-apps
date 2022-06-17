@@ -2,7 +2,7 @@
 
 APPNAME=${APPNAME:-nextcloud}
 
-REDIS_VERSION=${REDIS_VERSION:-redis:6.2.6}
+REDIS_VERSION=${REDIS_VERSION:-redis:7.0.2-alpine}
 
 ACTION=$1
 case $ACTION in

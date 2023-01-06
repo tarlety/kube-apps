@@ -2,11 +2,11 @@
 
 APPNAME=${APPNAME:-snipe-it}
 
-SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v6.0.13}
+SNIPEIT_VERSION=${SNIPEIT_VERSION:-snipe/snipe-it:v6.0.14}
 # https://hub.docker.com/_/nginx
-NGINX_VERSION=${NGINX_VERSION:-nginx:1.23.1}
+NGINX_VERSION=${NGINX_VERSION:-nginx:1.23.3}
 # https://hub.docker.com/_/busybox
-BUSYBOX_VERSION=${BUSYBOX_VERSION:-busybox:1.34.1}
+BUSYBOX_VERSION=${BUSYBOX_VERSION:-busybox:1.35.0}
 
 ACTION=$1
 case $ACTION in

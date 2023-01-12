@@ -52,7 +52,7 @@ spec:
             - mountPath: "/var/lib/odoo"
               name: data
               subPath: odoo
-            - mountPath: "/mnt/extra-addons/15.0"
+            - mountPath: "/mnt/extra-addons"
               name: data
               subPath: extra-addons
             - mountPath: "/backup"

@@ -7,7 +7,6 @@ APPNAME=${APPNAME:-hackmd}
 # 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.
 # 2. postgres 9.6 End of Life: 2021-09
 POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.18}
-POSTGRES_EXPORTOR_VERSION=${POSTGRES_EXPORTOR_VERSION:-wrouesnel/postgres_exporter:v0.8.0}
 
 ACTION=$1
 case $ACTION in
@@ -57,21 +56,6 @@ spec:
             - mountPath: "/var/lib/postgresql/data/pgdata"
               name: data
               subPath: pgdata
-        - image: ${POSTGRES_EXPORTOR_VERSION}
-          name: exporter
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: user-password
-            - name: DATA_SOURCE_NAME
-              value: postgres://hackmd:\$(POSTGRES_PASSWORD)@localhost:5432/postgres?sslmode=disable
-          ports:
-            - name: exporter
-              containerPort: 9187
-              protocol: TCP
       volumes:
       - name: data
         persistentVolumeClaim:

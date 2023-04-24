@@ -3,7 +3,6 @@
 APPNAME=${APPNAME:-nextcloud}
 
 MARIADB_VERSION=${MARIADB_VERSION:-mariadb:10.8.6}
-MARIADB_EXPORTER_VERSION=${MARIADB_EXPORTER_VERSION:-prom/mysqld-exporter:v0.14.0}
 
 ACTION=$1
 case $ACTION in
@@ -60,21 +59,6 @@ spec:
               subPath: mysql
             - mountPath: /var/lib/backup
               name: backup
-        - image: ${MARIADB_EXPORTER_VERSION}
-          name: exporter
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: passwords
-                  key: admin-password
-            - name: DATA_SOURCE_NAME
-              value: "root:\$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
-          ports:
-            - name: exporter
-              containerPort: 9104
-              protocol: TCP
       volumes:
       - name: data
         persistentVolumeClaim:

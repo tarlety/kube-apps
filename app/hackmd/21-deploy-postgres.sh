@@ -2,11 +2,11 @@
 
 APPNAME=${APPNAME:-hackmd}
 
-#POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:11.2}
-# The reason to keep postgres 9.6:
+# The reason to keep old data in postgres 9.6:
 # 1. The data directory was initialized by PostgreSQL version 9.6, which is not compatible with this version 11.
 # 2. postgres 9.6 End of Life: 2021-09
-POSTGRES_VERSION=${POSTGRES_VERSION:-postgres:9.6.18}
+POSTGRES_VERSION9=${POSTGRES_VERSION:-postgres:9.6.18}
+POSTGRES_VERSION13=${POSTGRES_VERSION:-postgres:13.11}
 
 ACTION=$1
 case $ACTION in
@@ -15,24 +15,24 @@ case $ACTION in
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgres9
   namespace: app-${APPNAME}
   labels:
-    type: app
-    app: postgres
+    type: database
+    database: postgres9
 spec:
   selector:
     matchLabels:
-      app: postgres
+      database: postgres9
   template:
     metadata:
       labels:
-        type: app
-        app: postgres
+        type: database
+        database: postgres9
     spec:
       containers:
-        - image: ${POSTGRES_VERSION}
-          name: postgres
+        - image: ${POSTGRES_VERSION9}
+          name: postgres9
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -44,8 +44,8 @@ spec:
                   name: passwords
                   key: user-password
           ports:
-            - name: postgres
-              containerPort: 5432
+            - name: postgres9
+              containerPort: 5433
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 30
@@ -55,7 +55,51 @@ spec:
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data/pgdata"
               name: data
-              subPath: pgdata
+              subPath: pgdata9
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: normal
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres13
+  namespace: app-${APPNAME}
+  labels:
+    type: database
+    database: postgres13
+spec:
+  selector:
+    matchLabels:
+      database: postgres13
+  template:
+    metadata:
+      labels:
+        type: database
+        database: postgres13
+    spec:
+      containers:
+        - image: ${POSTGRES_VERSION13}
+          name: postgres13
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: postgres-env
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: user-password
+          ports:
+            - name: postgres13
+              containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/pgdata"
+              name: data
+              subPath: pgdata13
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -63,7 +107,7 @@ spec:
 EOF
 	;;
 "off")
-	kubectl delete -n app-${APPNAME} deploy postgres
+	kubectl delete -n app-${APPNAME} deploy postgres9 postgres13
 	;;
 *)
 	echo "$(basename $0) on/off"

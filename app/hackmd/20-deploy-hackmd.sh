@@ -42,7 +42,7 @@ spec:
                   name: passwords
                   key: user-password
             - name: CMD_DB_URL
-              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres:5432/hackmd
+              value: postgres://hackmd:\$(CMD_DB_PASSWORD)@postgres13:5432/hackmd
             - name: CMD_ALLOW_EMAIL_REGISTER
               value: "false"
             - name: CMD_ALLOW_ANONYMOUS

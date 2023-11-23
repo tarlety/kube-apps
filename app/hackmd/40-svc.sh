@@ -31,24 +31,11 @@ spec:
       protocol: TCP
   selector:
     database: postgres13
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres9
-  namespace: app-${APPNAME}
-spec:
-  ports:
-    - name: postgres9
-      port: 5433
-      protocol: TCP
-  selector:
-    database: postgres9
 EOF
 	;;
 "off")
 	kubectl delete -n app-${APPNAME} svc web
-	kubectl delete -n app-${APPNAME} svc postgres9 postgres13
+	kubectl delete -n app-${APPNAME} svc postgres13
 	;;
 *)
 	echo $(basename $0) on/off

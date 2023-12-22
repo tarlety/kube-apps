@@ -1,0 +1,37 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: traefik-deployment
+  labels:
+    app: traefik
+
+spec:
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-account
+      hostNetwork: true
+      containers:
+        - name: traefik
+          image: traefik:v2.10
+          args:
+            - --api.insecure
+            - --accesslog
+            - --entrypoints.web.Address=:80
+            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+            - --entrypoints.web.http.redirections.entryPoint.scheme=https
+            - --entrypoints.websecure.Address=:443
+            - --entrypoints.websecure.http.tls
+            - --providers.kubernetescrd
+            - --log.level=DEBUG
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+---
